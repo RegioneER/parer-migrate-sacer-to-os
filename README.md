@@ -55,6 +55,8 @@ Requisiti minimi per installazione:
 
 |  GroupId | ArtifactId  | Version |
 |:---:|:---:|:---:|
+|The|||
+|aopalliance|aopalliance|1.0|
 |com.aayushatharva.brotli4j|brotli4j|1.16.0|
 |com.aayushatharva.brotli4j|native-linux-x86_64|1.16.0|
 |com.aayushatharva.brotli4j|service|1.16.0|
