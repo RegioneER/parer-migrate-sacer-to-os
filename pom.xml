@@ -31,20 +31,20 @@
 		<quarkus.custom.log.version>1.3.0</quarkus.custom.log.version>
 	</properties>
 
-	<scm>
+<scm>
 		<developerConnection>
 			scm:git:https://github.com/RegioneER/parer-migrate-sacer-to-os.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
-	<distributionManagement>
+<distributionManagement>
         <repository>
           <id>github</id>
           <url>https://maven.pkg.github.com/RegioneER/parer-migrate-sacer-to-os</url>
         </repository>      
     </distributionManagement>
 
-	<repositories>
+<repositories>
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>           
