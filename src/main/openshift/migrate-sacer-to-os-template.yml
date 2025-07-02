@@ -1,0 +1,320 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  app: migrate-sacer-to-os
+  template: migrate-sacer-to-os-quarkus
+metadata:
+  annotations:
+    description: |-
+      Template microservizio migrazione clob/lob da database SACER verso Object Storage (vedere https://gitlab.ente.regione.emr.it/parer/okd/migrate-sacer-to-os.git)
+    iconClass: icon-quarkus
+    openshift.io/display-name: Microservice Migrate OS 
+    openshift.io/documentation-url: https://gitlab.ente.regione.emr.it/parer/okd/migrate-sacer-to-os
+    openshift.io/long-description: Il template fornisce la creazione del microservizio migrazione object storage
+    openshift.io/provider-display-name: Parer (Regione Emilia Romagna)
+    openshift.io/support-url: https://gitlab.ente.regione.emr.it/parer
+    tags: quarkus,migrate
+    template.openshift.io/bindable: "false"
+  name: migrate-sacer-to-os-quarkus
+objects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: migrate-sacer-to-os-secrets 
+    labels:
+      app: migrate-sacer-to-os    
+  stringData:
+    QUARKUS_DATASOURCE_JDBC_URL: ${DATABASE_URL}
+    QUARKUS_DATASOURCE_USERNAME: ${DATABASE_USER}      
+    QUARKUS_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+    SACER_JDBC_URL: ${SACER_DATABASE_URL}
+    SACER_USERNAME: ${SACER_DATABASE_USER}
+    SACER_PASSWORD: ${SACER_DATABASE_PASSWORD}
+    QUARKUS_S3_ENDPOINT_OVERRIDE: ${S3_ENDPOINT_OVERRIDE}
+    QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_ACCESS_KEY_ID: ${S3_AWS_CREDENTIALS_STATIC_PROVIDER_ACCESS_KEY_ID}
+    QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_SECRET_ACCESS_KEY: ${S3_AWS_CREDENTIALS_STATIC_PROVIDER_SECRET_ACCESS_KEY}
+  type: Opaque
+- apiVersion: v1
+  kind: Secret
+  data:
+    .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5lbnRlLnJlZ2lvbmUuZW1yLml0L3BhcmVyLyI6eyJ1c2VybmFtZSI6Im9rZF9kZXBsb3kiLCJwYXNzd29yZCI6IlhUWkJ5V1lBQnZ4UVVMOFdreHFxIiwiZW1haWwiOiJnaXRsYWJAZGVwbG95LmxvY2FsIn19fQ==
+  metadata:
+    name: gitlab-registry-token
+  type: kubernetes.io/dockerconfigjson
+- apiVersion: v1
+  kind: ConfigMap
+  data:
+    application.yaml: |-
+      "%${PROFILE}":
+        quarkus:
+          #(locked build time)
+          #ssl:
+          #native: "true"
+          http:
+            port: 8080
+            test-port: 0
+          shutdown:
+            timeout: "PT30S"
+          datasource:
+            db-kind: "oracle"
+            jdbc:
+              driver: "oracle.jdbc.driver.OracleDriver"
+          hibernate-orm:
+            dialect: "org.hibernate.dialect.Oracle10gDialect"
+            database:
+              generation: "none"
+            sacer: 
+              jdbc:
+                statement-fetch-size: 1000                           
+          #logging
+          log:
+            level: INFO
+            console:
+              json: false
+            category:
+              it.eng.parer:
+                level: "INFO"
+  metadata:
+    labels:
+      app: migrate-sacer-to-os
+    name: migrate-sacer-to-os-config
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: migrate-sacer-to-os
+      expose: "true"
+    name: migrate-sacer-to-os
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: migrate-sacer-to-os
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 10m
+    labels:
+      app: migrate-sacer-to-os
+      expose: "true"
+    name: migrate-sacer-to-os
+  spec:
+    port:
+      targetPort: http
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: migrate-sacer-to-os
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      app: migrate-sacer-to-os
+      gl_log_application: migrate-sacer-to-os
+      gl_tags: ${AMBIENTE}
+      group: it.eng.parer
+    name: migrate-sacer-to-os
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: migrate-sacer-to-os
+    strategy:
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi        
+        requests:
+          cpu: 10m
+          memory: 40Mi       
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: migrate-sacer-to-os
+          gl_log_application: migrate-sacer-to-os
+          gl_tags: ${AMBIENTE}
+          group: it.eng.parer
+      spec:
+        containers:
+        - env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_DATASOURCE_JDBC_URL
+            - name: QUARKUS_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_DATASOURCE_USERNAME
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_DATASOURCE_PASSWORD
+            - name: JAVA_OPTS_APPEND
+              value: >-
+                -Dfile.encoding=UTF-8 -Dquarkus.profile=${PROFILE} 
+                -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport
+                -Dsun.zip.disableMemoryMapping=true
+                -Dcom.sun.management.jmxremote=true
+                -Dcom.sun.management.jmxremote.port=3000
+                -Dcom.sun.management.jmxremote.rmi.port=3001
+                -Djava.rmi.server.hostname=127.0.0.1
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false
+            - name: JAVA_MAX_MEM_RATIO
+              value: '90'
+            - name: JAVA_INITIAL_MEM_RATIO
+              value: '40'
+            - name: TZ
+              value: Europe/Rome
+            - name: SACER_JDBC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: SACER_JDBC_URL
+            - name: SACER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: SACER_USERNAME
+            - name: SACER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: SACER_PASSWORD
+            - name: QUARKUS_S3_ENDPOINT_OVERRIDE
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_S3_ENDPOINT_OVERRIDE
+            - name: QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_ACCESS_KEY_ID
+            - name: QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: migrate-sacer-to-os-secrets
+                  key: QUARKUS_S3_AWS_CREDENTIALS_STATIC_PROVIDER_SECRET_ACCESS_KEY                
+          image: registry.ente.regione.emr.it/parer/okd/migrate-so-sip:${IMGTAG}
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /q/health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 180
+          name: migrate-sacer-to-os
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 180
+          resources:
+            limits:
+              cpu: 800m
+              memory: 2000Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /deployments/config
+            name: migrate-sacer-to-os-config
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        imagePullSecrets:
+        - name: gitlab-registry-token
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: migrate-sacer-to-os-config
+          name: migrate-sacer-to-os-config
+    test: false
+    triggers:
+    - type: ConfigChange
+parameters:
+- description: Nome dal tag dell'immagine da utilizzare (default latest)
+  displayName: Nome immagine
+  name: IMGTAG
+  required: false
+  value: latest
+- description: Nome dell'ambiente o namespace (e.g. latest/stable/pre-prod/prod)
+  displayName: ambiente
+  name: AMBIENTE
+  required: false
+  value: latest
+- description: Nome profilo quarkus
+  displayName: Nome profilo quarkus
+  name: PROFILE
+  required: true  
+- description: URL per accesso db
+  displayName: URL per accesso db
+  name: DATABASE_URL
+  required: true  
+- description: Nome utente per accesso db
+  displayName: Nome utente per accesso db
+  name: DATABASE_USER
+  required: true
+- description: Password per accesso db
+  displayName: Password per accesso db
+  name: DATABASE_PASSWORD
+  required: true
+- description: URL per accesso db SACER
+  displayName: URL per accesso db SACER
+  name: SACER_DATABASE_URL
+  required: true
+- description: USERNAME per accesso db SACER
+  displayName: USERNAME per accesso db SACER
+  name: SACER_DATABASE_USER
+  required: true
+- description: PASSWORD per accesso db SACER
+  displayName: PASSWORD per accesso db SACER
+  name: SACER_DATABASE_PASSWORD
+  required: true
+- description: Endpoint S3
+  displayName: Endpoint S3
+  name: S3_ENDPOINT_OVERRIDE
+  required: true
+- description: Access key S3
+  displayName: Access key S3
+  name: S3_AWS_CREDENTIALS_STATIC_PROVIDER_ACCESS_KEY_ID
+  required: true
+- description: Secret key S3
+  displayName: Secret key S3
+  name: S3_AWS_CREDENTIALS_STATIC_PROVIDER_SECRET_ACCESS_KEY
+  required: true

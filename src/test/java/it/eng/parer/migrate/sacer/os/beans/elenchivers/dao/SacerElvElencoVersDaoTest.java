@@ -1,0 +1,102 @@
+package it.eng.parer.migrate.sacer.os.beans.elenchivers.dao;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.UUID;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.TestTransaction;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
+import it.eng.parer.DatabaseInit;
+import it.eng.parer.Profiles;
+import it.eng.parer.migrate.sacer.os.base.dto.FilterDto;
+import it.eng.parer.migrate.sacer.os.beans.elenchivers.ISacerElencoVersDao;
+import it.eng.parer.migrate.sacer.os.exceptions.AppMigrateOsDeleteSrcException;
+import jakarta.inject.Inject;
+
+@QuarkusTest
+@TestProfile(Profiles.H2.class)
+class SacerElvElencoVersDaoTest {
+    @Inject
+    ISacerElencoVersDao dao;
+
+    @Inject
+    DatabaseInit databaseInit;
+
+    @ConfigProperty(name = "s3.indiceelv.bucket.name")
+    String bucketName;
+
+    @ConfigProperty(name = "s3.tenant.name")
+    String tenant;
+
+    @ConfigProperty(name = "s3.backend.name")
+    String nmBackend;
+
+    @Test
+    @TestTransaction
+    void findIdsElvElencoVersByIdStrutTest() {
+	FilterDto filter = new FilterDto();
+	filter.setRowlimit(1L); // fixed
+	filter.setIdStrut(8L); // fixed (PARER_TEST)
+
+	assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
+    }
+
+    @Test
+    @TestTransaction
+    void findIdsElvElencoVersByIdElencoVersTest() {
+	FilterDto filter = new FilterDto();
+	filter.setRowlimit(1L); // fixed
+	filter.setIdElencoVers(212L);
+
+	assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
+    }
+
+    @Test
+    @TestTransaction
+    void saveObjectStorageLinkFileElencoVersUdTest() {
+	assertDoesNotThrow(() -> dao.saveObjectStorageLinkFileElencoVersUd(tenant, bucketName,
+		UUID.randomUUID().toString(), 3L, 1L));
+    }
+
+    @Test
+    @TestTransaction
+    void findFileElencoVersByIdFileElencoVersTestNoException() {
+	assertDoesNotThrow(() -> dao.findFileElencoVersByIdFileElencoVers(1L));
+    }
+
+    @Test
+    @TestTransaction
+    void deleteBlFileElencoVersTestNoException() {
+	assertDoesNotThrow(() -> dao.deleteBlFileElencoVers(277822406L));
+    }
+
+    @Test
+    @TestTransaction
+    void deleteBlFileElencoVersTestWithException() {
+	//
+	assertThrows(AppMigrateOsDeleteSrcException.class,
+		() -> dao.deleteBlFileElencoVers(Long.MIN_VALUE));
+    }
+
+    @Test
+    @TestTransaction
+    void findElencoVersByIdTestNoException() {
+	assertDoesNotThrow(() -> dao.findElencoVersById(396835216L));
+    }
+
+    @Test
+    @TestTransaction
+    void findIdsElvElencoVersAsStreamTestWithInvalidFilter() {
+	FilterDto filter = new FilterDto();
+	filter.setIdStrut(Long.MIN_VALUE); // invalid structure ID
+
+	assertEquals(0L, dao.findIdsElvElencoVers(filter).count());
+    }
+
+}

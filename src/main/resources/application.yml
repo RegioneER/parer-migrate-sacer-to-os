@@ -1,0 +1,224 @@
+quarkus:
+  application:
+    name: "Migrazione SACER Object Storage"
+  devservices:
+    enabled: false
+  #package:
+  #type: "uber-jar"
+  http:
+    root-path: "/migrate-sacer-to-os"
+    body:
+      handle-file-uploads: true
+      preallocate-body-buffer: true
+      uploads-directory: "/tmp"
+      delete-uploaded-files-on-end: true
+    auth:
+      basic: true
+      policy:
+        role-internal-policy:
+          roles-allowed: "admin"
+      permission:
+        internal:
+          paths: "admin/*,api/*"
+          policy: "role-internal-policy"
+  security:
+    users:
+      embedded:
+        enabled: true
+  transaction-manager:
+    default-transaction-timeout: "31536000S" # impostato timeout ad un anno rispetto il default (60S) per evitare problematiche di resultset chiusi prima del tempo
+  datasource:
+    db-kind: "oracle" # primary datasource
+    jdbc:
+      driver: "oracle.jdbc.driver.OracleDriver"
+    sacer:
+      db-kind: "oracle" # secondary datasource
+      jdbc:
+        driver: "oracle.jdbc.driver.OracleDriver"
+        url: ${SACER_JDBC_URL}
+      username: ${SACER_USERNAME}
+      password: ${SACER_PASSWORD}
+  hibernate-orm:
+    packages: "it.eng.parer.migrate.sacer.os.jpa.entity"
+    dialect: "org.hibernate.dialect.OracleDialect"
+    database:
+      generation: "none"
+    sacer:
+      packages: "it.eng.parer.migrate.sacer.os.jpa.sacer"
+      dialect: "org.hibernate.dialect.OracleDialect"
+      database:
+        generation: "none"
+      datasource: "sacer"
+  smallrye-openapi:
+    info-title: "Migrazione SACER Object Storage API"
+  swagger-ui:
+    always-include: true
+    validator-url: "none"
+  scheduler:
+    cron-type: "unix"
+  s3:
+    sync-client:
+      tls-trust-managers-provider:
+        type: "trust-all"
+    path-style-access: true
+    aws:
+      region: "us-east-1"
+      credentials:
+        type: "static"
+  #logging
+  log:
+    level: INFO
+    console:
+      format: "%d{yyyy-MM-dd HH:mm:ss,SSS} ; %-5p ; [%c] ; (%t) ; %X{log_uuid} ; %m%n"
+  # indicizzazione beans esterni (TODO: da verificare)
+  # [WARNING] [io.quarkus.deployment.steps.ReflectiveHierarchyStep] Unable to properly register the hierarchy of the following classes for reflection as they are not in the Jandex index:
+  #        - it.eng.parer.ws.xml.versfascicolorespV2.EsitoVersamentoFascicolo (source: SmallRyeOpenApiProcessor > null)
+  index-dependency:
+    quarkuslogger:
+      group-id: "it.eng.parer"
+      artifact-id: "quarkus-custom-log-handlers"
+# (default) property custom per impostare che indica la tipologia di check integrità dell'oggetto inviato (https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html)
+# valori previsti : MD5 / SHA-256 / CRC32C
+s3:
+  obj:
+    checksum:
+      algorithm: "CRC32C"
+# custom properties   
+parer: 
+  migrate:
+    sacer:
+      os:
+        persist-completed:
+          enabled: true # (default) property custom per abilitare il monitoraggio completo degli oggetti migrati
+        comp:
+          ids-from-view:
+            enabled: false # (default) property custom per abilitare l'accesso a vista/table dedicata
+# job configuration https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+job:
+  max-execution-per-host: -1 # max execution per host (-1 = disabled)
+  sip:
+    cron: "* * * * *" # every minute (unix crontab)
+  comp:
+    cron: "* * * * *" # every minute (unix crontab)
+  elvaip:
+    cron: "* * * * *" # every minute (unix crontab)
+  aip:
+    cron: "* * * * *" # every minute (unix crontab)
+  aipserie:
+    cron: "* * * * *" # every minute (unix crontab)
+  sipupdud:
+    cron: "* * * * *" # every minute (unix crontab)
+  indelv:
+    cron: "* * * * *" # every minute (unix crontab)
+  upddatispecini:
+    cron: "* * * * *" # every minute (unix crontab)
+  datispecvers:
+    cron: "* * * * *" # every minute (unix crontab)
+# Profili (attivalibili con -Dquarkus-profile=)
+# Dev mode = quarkus:dev (necessario esplicitare -DQUARKUS_DATASOURCE_USER=<user> -DQUARKUS_DATASOURCE_PASSWORD=<password db>)
+"%dev":
+  quarkus:
+    http:
+      port: 10005
+    shutdown:
+      timeout: "PT1S"
+    datasource:
+      db-kind: "h2"
+      username: "sa"
+      password: "password"
+      jdbc:
+        #url: "jdbc:h2:mem:migratedb;DB_CLOSE_DELAY=-1"
+        driver: "org.h2.Driver"
+        url: "jdbc:h2:file:/tmp/migratedb;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE;"
+    hibernate-orm:
+      validate-in-dev-mode: false
+      dialect: "org.hibernate.dialect.H2Dialect"
+      database:
+        generation: "update"
+      jdbc:
+        statement-fetch-size: 1000
+      #fetch:
+      #batch-size: 1000 # default 16
+      #validate-in-dev-mode: false
+      log:
+        sql: false
+        format-sql: false
+      sacer:
+        log:
+          sql: true
+          format-sql: false
+    s3:
+      api-call-timeout: 120S
+      api-call-attempt-timeout: 120S
+    security:
+      users:
+        embedded:
+          plain-text: true
+          users:
+            #admin: "80589461aa1b0e9b7888f936787bf9bc" # echo -n admin:Quarkus:password | md5
+            admin: "password"
+          roles:
+            admin: "admin"
+    log:
+      category:
+        it.eng.parer:
+          level: "DEBUG"
+# test datasource configuration
+"%test":
+  quarkus:
+    scheduler:
+      enabled: false
+    datasource:
+      db-kind: "h2"
+      username: "sa"
+      password: "password"
+      jdbc:
+        url: "jdbc:h2:mem:migratedb;DB_CLOSE_DELAY=-1"
+        driver: "org.h2.Driver"
+    hibernate-orm:
+      dialect: "org.hibernate.dialect.H2Dialect"
+      log:
+        sql: true
+        format-sql: false
+      sacer:
+       log:
+         sql: true
+         format-sql: false		
+    s3:
+      sync-client:
+        tls-trust-managers-provider:
+          type: "trust-all"
+      path-style-access: true
+      aws:
+        region: "us-east-1"
+  # max request managed by host (-1 = disabled)
+  parer:
+    migrate:
+      os:
+        host:
+          maxreq: 1
+"%h2":
+  quarkus:
+    scheduler:
+      enabled: false
+    datasource:
+      db-kind: "h2"
+      username: "sa"
+      password: "password"
+      jdbc:
+        url: "jdbc:h2:mem:migratedb;DB_CLOSE_DELAY=-1"
+        driver: "org.h2.Driver"
+    hibernate-orm:
+      dialect: "org.hibernate.dialect.H2Dialect"
+      database:
+        generation:
+          create-schemas: true
+      log:
+        sql: true
+        format-sql: false
+      sacer:
+       log: 
+         sql: true
+         format-sql: false
+  job:
+    max-execution-per-host: -1 # max execution per host (-1 = disabled)
