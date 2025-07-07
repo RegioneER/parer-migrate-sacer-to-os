@@ -58,7 +58,7 @@ maintenance:
     - name: ' Engineering Ingegneria Informatica S.p.A.'
       until: '2026-12-23'
   type: contract
-name: Parer - Sintesi Classi Errore Versamenti Falliti
+name: Parer - Migrazione blob/clob SACER verso object storage
 platforms:
   - linux
 releaseDate: '2023-11-13'
