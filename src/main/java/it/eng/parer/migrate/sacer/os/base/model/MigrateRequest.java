@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -81,53 +77,53 @@ public class MigrateRequest {
     public Boolean deletesrc = Boolean.TRUE;
 
     public MigrateRequest() {
-	super();
+        super();
     }
 
     public MigrateRequest(Long idunitadoc, Long iddoc, Long idsessionvers, Long idcomp,
-	    Long idverindiceaip, Long idverserie, Long idstrut, Long idElencoVers,
-	    LocalDate dtapertura, Integer dtaperturayy, Long rowlimit, Boolean deleteSrc) {
-	super();
-	this.idunitadoc = idunitadoc;
-	this.iddoc = iddoc;
-	this.idsessionvers = idsessionvers;
-	this.idcomp = idcomp;
-	this.idverindiceaip = idverindiceaip;
-	this.idstrut = idstrut;
-	this.dtapertura = dtapertura;
-	this.dtaperturayy = dtaperturayy;
-	this.rowlimit = rowlimit;
-	this.deletesrc = deleteSrc;
-	this.idverserie = idverserie;
-	this.idelencovers = idElencoVers;
+            Long idverindiceaip, Long idverserie, Long idstrut, Long idElencoVers,
+            LocalDate dtapertura, Integer dtaperturayy, Long rowlimit, Boolean deleteSrc) {
+        super();
+        this.idunitadoc = idunitadoc;
+        this.iddoc = iddoc;
+        this.idsessionvers = idsessionvers;
+        this.idcomp = idcomp;
+        this.idverindiceaip = idverindiceaip;
+        this.idstrut = idstrut;
+        this.dtapertura = dtapertura;
+        this.dtaperturayy = dtaperturayy;
+        this.rowlimit = rowlimit;
+        this.deletesrc = deleteSrc;
+        this.idverserie = idverserie;
+        this.idelencovers = idElencoVers;
     }
 
     @Override
     public int hashCode() {
-	return Objects.hash(deletesrc, dtapertura, dtaperturayy, idcomp, iddoc, idelencovers,
-		idsessionvers, idstrut, idunitadoc, idverindiceaip, idverserie, rowlimit);
+        return Objects.hash(deletesrc, dtapertura, dtaperturayy, idcomp, iddoc, idelencovers,
+                idsessionvers, idstrut, idunitadoc, idverindiceaip, idverserie, rowlimit);
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj)
-	    return true;
-	if (obj == null)
-	    return false;
-	if (getClass() != obj.getClass())
-	    return false;
-	MigrateRequest other = (MigrateRequest) obj;
-	return Objects.equals(deletesrc, other.deletesrc)
-		&& Objects.equals(dtapertura, other.dtapertura)
-		&& Objects.equals(dtaperturayy, other.dtaperturayy)
-		&& Objects.equals(idcomp, other.idcomp) && Objects.equals(iddoc, other.iddoc)
-		&& Objects.equals(idelencovers, other.idelencovers)
-		&& Objects.equals(idsessionvers, other.idsessionvers)
-		&& Objects.equals(idstrut, other.idstrut)
-		&& Objects.equals(idunitadoc, other.idunitadoc)
-		&& Objects.equals(idverindiceaip, other.idverindiceaip)
-		&& Objects.equals(idverserie, other.idverserie)
-		&& Objects.equals(rowlimit, other.rowlimit);
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MigrateRequest other = (MigrateRequest) obj;
+        return Objects.equals(deletesrc, other.deletesrc)
+                && Objects.equals(dtapertura, other.dtapertura)
+                && Objects.equals(dtaperturayy, other.dtaperturayy)
+                && Objects.equals(idcomp, other.idcomp) && Objects.equals(iddoc, other.iddoc)
+                && Objects.equals(idelencovers, other.idelencovers)
+                && Objects.equals(idsessionvers, other.idsessionvers)
+                && Objects.equals(idstrut, other.idstrut)
+                && Objects.equals(idunitadoc, other.idunitadoc)
+                && Objects.equals(idverindiceaip, other.idverindiceaip)
+                && Objects.equals(idverserie, other.idverserie)
+                && Objects.equals(rowlimit, other.rowlimit);
     }
 
 }

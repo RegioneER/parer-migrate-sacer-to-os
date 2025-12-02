@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.sipaggmetadati.impl;
@@ -40,7 +36,7 @@ import jakarta.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class MigrateOsSipAggMetadatiService extends MigrateOsAbstract
-	implements IMigrateOsSipAggMetadatiService {
+        implements IMigrateOsSipAggMetadatiService {
 
     @Inject
     ISacerSipAggMetadatiDao sacerSipDao;
@@ -50,30 +46,30 @@ public class MigrateOsSipAggMetadatiService extends MigrateOsAbstract
 
     @Override
     public List<RequestDto> registerMigrationSipRequest(List<MigrateRequest> osSipRequests) {
-	return super.registerRequestByType(osSipRequests, RequestCnts.Type.SIPUPDUD);
+        return super.registerRequestByType(osSipRequests, RequestCnts.Type.SIPUPDUD);
     }
 
     @Override
     protected ObjectType getObjType() {
-	return ObjectStorageCnts.ObjectType.ARO_UPD_UNITA_DOC;
+        return ObjectStorageCnts.ObjectType.ARO_UPD_UNITA_DOC;
     }
 
     @Override
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public void processMigrationSipFromRequest(Long idRequest) {
-	super.processMigrationRequest(idRequest);
+        super.processMigrationRequest(idRequest);
     }
 
     @Override
     protected Stream<Long> findObjIdsByFilter(FilterDto filter) {
-	return sacerSipDao.findIdsUpdUnitaDoc(filter);
+        return sacerSipDao.findIdsUpdUnitaDoc(filter);
     }
 
     @Override
     protected IObjectStorageResource executeMigrateViaS3(Long idSacerBackend, Long objId,
-	    Boolean deleteSrc) throws AppMigrateOsS3Exception {
-	return osSipS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
+            Boolean deleteSrc) throws AppMigrateOsS3Exception {
+        return osSipS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
     }
 
 }

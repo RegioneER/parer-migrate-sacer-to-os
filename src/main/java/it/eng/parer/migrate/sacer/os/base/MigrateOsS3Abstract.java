@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
@@ -40,7 +36,7 @@ public abstract class MigrateOsS3Abstract {
 
     // MD5 vs SHA-x vs CRC32C
     @ConfigProperty(name = "s3.obj.checksum.algorithm")
-    ChecksumAlghoritm checksumlAlghoritm;
+    ChecksumAlghoritm checksumAlghoritm;
 
     @ConfigProperty(name = "quarkus.uuid")
     String instanceUUID;
@@ -61,80 +57,80 @@ public abstract class MigrateOsS3Abstract {
      *         S3
      */
     protected IObjectStorageResource s3PutObjectAsFile(InputStream is, long size, String objbase64,
-	    String bucketName, String key) {
-	Builder putObjectBuilder = PutObjectRequest.builder().bucket(bucketName).key(key);
-	// metadata
-	putObjectBuilder.metadata(MigrateUtils.defaultS3Metadata(instanceUUID));
-	// data integrity
-	switch (checksumlAlghoritm) {
-	case SHA256:
-	    putObjectBuilder.checksumSHA256(objbase64);
-	    break;
-	case CRC32C:
-	    putObjectBuilder.checksumCRC32C(objbase64);
-	    break;
-	default:
-	    putObjectBuilder.contentMD5(objbase64);
-	    break;
-	}
-	//
-	PutObjectRequest objectRequest = putObjectBuilder.build();
-	PutObjectResponse objectRequestResponse = s3Client.putObject(objectRequest,
-		RequestBody.fromInputStream(is, size));
+            String bucketName, String key) {
+        Builder putObjectBuilder = PutObjectRequest.builder().bucket(bucketName).key(key);
+        // metadata
+        putObjectBuilder.metadata(MigrateUtils.defaultS3Metadata(instanceUUID));
+        // data integrity
+        switch (checksumAlghoritm) {
+        case SHA256:
+            putObjectBuilder.checksumSHA256(objbase64);
+            break;
+        case CRC32C:
+            putObjectBuilder.checksumCRC32C(objbase64);
+            break;
+        default:
+            putObjectBuilder.contentMD5(objbase64);
+            break;
+        }
+        //
+        PutObjectRequest objectRequest = putObjectBuilder.build();
+        PutObjectResponse objectRequestResponse = s3Client.putObject(objectRequest,
+                RequestBody.fromInputStream(is, size));
 
-	return fromObjRespToIOStorageResouce(objectRequestResponse, bucketName, key, objbase64);
+        return fromObjRespToIOStorageResouce(objectRequestResponse, bucketName, key, objbase64);
     }
 
     private IObjectStorageResource fromObjRespToIOStorageResouce(PutObjectResponse response,
-	    String bucketName, String key, String objbase64) {
-	return new IObjectStorageResource() {
-	    @Override
-	    public String getS3Key() {
-		return key;
-	    }
+            String bucketName, String key, String objbase64) {
+        return new IObjectStorageResource() {
+            @Override
+            public String getS3Key() {
+                return key;
+            }
 
-	    @Override
-	    public String getETag() {
-		return response.eTag();
-	    }
+            @Override
+            public String getETag() {
+                return response.eTag();
+            }
 
-	    @Override
-	    public String getObjBase64() {
-		return objbase64;
-	    }
+            @Override
+            public String getObjBase64() {
+                return objbase64;
+            }
 
-	    @Override
-	    public String getSHA256() {
-		return response.checksumSHA256();
-	    }
+            @Override
+            public String getSHA256() {
+                return response.checksumSHA256();
+            }
 
-	    @Override
-	    public String getS3Bucket() {
-		return bucketName;
-	    }
+            @Override
+            public String getS3Bucket() {
+                return bucketName;
+            }
 
-	    @Override
-	    public String getS3Checksum() {
-		return checksumlAlghoritm.name();
-	    }
+            @Override
+            public String getS3Checksum() {
+                return checksumAlghoritm.name();
+            }
 
-	    @Override
-	    public String getTenant() {
-		return tenant;
-	    }
-	};
+            @Override
+            public String getTenant() {
+                return tenant;
+            }
+        };
     }
 
     protected ChecksumAlghoritm getIntegrityType() {
-	return checksumlAlghoritm;
+        return checksumAlghoritm;
     }
 
     protected String getInstanceUUID() {
-	return instanceUUID;
+        return instanceUUID;
     }
 
     protected String getTenant() {
-	return tenant;
+        return tenant;
     }
 
 }

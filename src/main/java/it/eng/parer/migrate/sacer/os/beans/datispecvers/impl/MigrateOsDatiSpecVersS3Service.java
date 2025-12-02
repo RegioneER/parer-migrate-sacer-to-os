@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.datispecvers.impl;
@@ -65,10 +61,10 @@ import jakarta.transaction.Transactional.TxType;
  */
 @ApplicationScoped
 public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
-	implements IMigrateOsDatiSpecVersS3Service {
+        implements IMigrateOsDatiSpecVersS3Service {
 
     private static final Logger logger = LoggerFactory
-	    .getLogger(MigrateOsDatiSpecVersS3Service.class);
+            .getLogger(MigrateOsDatiSpecVersS3Service.class);
 
     @ConfigProperty(name = "s3.backend.name")
     String nmBackend; // Nome del backend S3 configurato.
@@ -95,47 +91,47 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      */
     @Override
     @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
-	    AppMigrateOsS3Exception.class })
+            AppMigrateOsS3Exception.class })
     public IObjectStorageResource doMigrate(Long idSacerBackend, Long idVersIniUnitaDoc,
-	    Boolean delete) throws AppMigrateOsS3Exception {
-	AroVersIniUnitaDoc aroVersIniUnitaDoc = sacerDatiSpecDao
-		.findAroVersIniUnitaDocById(idVersIniUnitaDoc);
-	// Recupera i dati specifici associati all'unità documento.
-	List<AroVersIniDatiSpec> datiSpec = aroVersIniUnitaDoc.getAroVersIniDatiSpecs();
+            Boolean delete) throws AppMigrateOsS3Exception {
+        AroVersIniUnitaDoc aroVersIniUnitaDoc = sacerDatiSpecDao
+                .findAroVersIniUnitaDocById(idVersIniUnitaDoc);
+        // Recupera i dati specifici associati all'unità documento.
+        List<AroVersIniDatiSpec> datiSpec = aroVersIniUnitaDoc.getAroVersIniDatiSpecs();
 
-	IObjectStorageResource osResource = null;
-	try {
-	    // Crea un blob XML organizzato per chiavi.
-	    Map<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob = createDatiSpecVersBlob(
-		    datiSpec);
-	    // Calcola l'URN per i dati specifici.
-	    String tmpUrn = calculateUrnDatiSpecVers(aroVersIniUnitaDoc);
+        IObjectStorageResource osResource = null;
+        try {
+            // Crea un blob XML organizzato per chiavi.
+            Map<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob = createDatiSpecVersBlob(
+                    datiSpec);
+            // Calcola l'URN per i dati specifici.
+            String tmpUrn = calculateUrnDatiSpecVers(aroVersIniUnitaDoc);
 
-	    // Crea e carica i file ZIP su S3 per ogni entry del blob.
-	    for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> entry : xmlBlob.entrySet()) {
-		osResource = createResourcesUpdDatiSpecUd(tmpUrn, entry,
-			datiSpec.get(0).getOrgStrut().getIdStrut(), idSacerBackend);
-	    }
+            // Crea e carica i file ZIP su S3 per ogni entry del blob.
+            for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> entry : xmlBlob.entrySet()) {
+                osResource = createResourcesUpdDatiSpecUd(tmpUrn, entry,
+                        datiSpec.get(0).getOrgStrut().getIdStrut(), idSacerBackend);
+            }
 
-	    // Elimina i dati sorgente se richiesto.
-	    if (!Objects.isNull(delete) && delete.booleanValue()) {
-		deleteDatiSpecVers(datiSpec);
-	    }
+            // Elimina i dati sorgente se richiesto.
+            if (!Objects.isNull(delete) && delete.booleanValue()) {
+                deleteDatiSpecVers(datiSpec);
+            }
 
-	    return osResource;
-	} catch (IOException e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .osresource(osResource)
-		    .message("Errore nella migrazione per idVersIniUnitaDoc {0,number,#}",
-			    idVersIniUnitaDoc)
-		    .build();
-	} catch (AppMigrateOsDeleteSrcException e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.INTERNAL_ERROR).cause(e)
-		    .osresource(osResource)
-		    .message("Errore nella migrazione per idVersIniUnitaDoc {0,number,#}",
-			    idVersIniUnitaDoc)
-		    .build();
-	}
+            return osResource;
+        } catch (IOException e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .osresource(osResource)
+                    .message("Errore nella migrazione per idVersIniUnitaDoc {0,number,#}",
+                            idVersIniUnitaDoc)
+                    .build();
+        } catch (AppMigrateOsDeleteSrcException e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.INTERNAL_ERROR).cause(e)
+                    .osresource(osResource)
+                    .message("Errore nella migrazione per idVersIniUnitaDoc {0,number,#}",
+                            idVersIniUnitaDoc)
+                    .build();
+        }
     }
 
     /**
@@ -146,10 +142,10 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @throws AppMigrateOsDeleteSrcException In caso di errore durante l'eliminazione.
      */
     private void deleteDatiSpecVers(List<AroVersIniDatiSpec> datiSpec)
-	    throws AppMigrateOsDeleteSrcException {
-	List<Long> ids = datiSpec.stream().map(AroVersIniDatiSpec::getIdVersIniDatiSpec).toList();
-	sacerDatiSpecDao.deleteBlDatiSpecVers(ids);
-	logger.debug("Eliminati dati specifici per gli ID: {}", ids);
+            throws AppMigrateOsDeleteSrcException {
+        List<Long> ids = datiSpec.stream().map(AroVersIniDatiSpec::getIdVersIniDatiSpec).toList();
+        sacerDatiSpecDao.deleteBlDatiSpecVers(ids);
+        logger.debug("Eliminati dati specifici per gli ID: {}", ids);
     }
 
     /**
@@ -162,15 +158,15 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @throws AppMigrateOsS3Exception eccezione generica
      */
     private Map<DatiSpecLinkOsKeyMap, Map<String, String>> createDatiSpecVersBlob(
-	    List<AroVersIniDatiSpec> datiSpecList) throws AppMigrateOsS3Exception {
-	try {
-	    Map<DatiSpecLinkOsKeyMap, Map<String, String>> blob = new HashMap<>();
-	    datiSpecList.forEach(datiSpec -> addToBlob(blob, datiSpec));
-	    return blob;
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .message("Errore durante creazione mappa blob dati specifici").build();
-	}
+            List<AroVersIniDatiSpec> datiSpecList) throws AppMigrateOsS3Exception {
+        try {
+            Map<DatiSpecLinkOsKeyMap, Map<String, String>> blob = new HashMap<>();
+            datiSpecList.forEach(datiSpec -> addToBlob(blob, datiSpec));
+            return blob;
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .message("Errore durante creazione mappa blob dati specifici").build();
+        }
     }
 
     /**
@@ -180,11 +176,11 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @param datiSpec Dato specifico da aggiungere.
      */
     private void addToBlob(Map<DatiSpecLinkOsKeyMap, Map<String, String>> blob,
-	    AroVersIniDatiSpec datiSpec) {
-	DatiSpecLinkOsKeyMap key = new DatiSpecLinkOsKeyMap(getKeyEntity(datiSpec),
-		datiSpec.getTiEntitaSacer().name());
-	blob.computeIfAbsent(key, k -> new HashMap<>()).put(datiSpec.getTiUsoXsd().name(),
-		datiSpec.getBlXmlDatiSpec());
+            AroVersIniDatiSpec datiSpec) {
+        DatiSpecLinkOsKeyMap key = new DatiSpecLinkOsKeyMap(getKeyEntity(datiSpec),
+                datiSpec.getTiEntitaSacer().name());
+        blob.computeIfAbsent(key, k -> new HashMap<>()).put(datiSpec.getTiUsoXsd().name(),
+                datiSpec.getBlXmlDatiSpec());
     }
 
     /**
@@ -195,11 +191,11 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @return Chiave dell'entità.
      */
     private Long getKeyEntity(AroVersIniDatiSpec datiSpec) {
-	return switch (datiSpec.getTiEntitaSacer()) {
-	case UNI_DOC -> datiSpec.getAroVersIniUnitaDoc().getIdVersIniUnitaDoc();
-	case DOC -> datiSpec.getIdVersIniDoc();
-	case COMP -> datiSpec.getIdVersIniComp();
-	};
+        return switch (datiSpec.getTiEntitaSacer()) {
+        case UNI_DOC -> datiSpec.getAroVersIniUnitaDoc().getIdVersIniUnitaDoc();
+        case DOC -> datiSpec.getIdVersIniDoc();
+        case COMP -> datiSpec.getIdVersIniComp();
+        };
     }
 
     /**
@@ -213,61 +209,61 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @throws AppMigrateOsS3Exception
      */
     private String calculateUrnDatiSpecVers(AroVersIniUnitaDoc aroVersIniUnitaDoc)
-	    throws AppMigrateOsS3Exception {
-	int idx = 0;
+            throws AppMigrateOsS3Exception {
+        int idx = 0;
 
-	try {
-	    AroUnitaDoc unitaDoc = aroVersIniUnitaDoc.getAroUnitaDoc();
-	    Object[] result = sacerDao.findNmEnteAndNmStrutByIdStrut(unitaDoc.getIdStrut());
+        try {
+            AroUnitaDoc unitaDoc = aroVersIniUnitaDoc.getAroUnitaDoc();
+            Object[] result = sacerDao.findNmEnteAndNmStrutByIdStrut(unitaDoc.getIdStrut());
 
-	    return calculateBaseUrn(
-		    formattaUrnPartVersatoreKeyOs((String) result[idx], (String) result[++idx]),
-		    formattaUrnPartUnitaDocKeyOs(unitaDoc), 1, true, S3_KEY_PAD5DIGITS_FMT);
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .message(
-			    "Errore durante calcolo URN dati specifici iniziali unità doc, idVersIniUnitaDoc {0,number,#}",
-			    aroVersIniUnitaDoc.getIdVersIniUnitaDoc())
-		    .build();
-	}
+            return calculateBaseUrn(
+                    formattaUrnPartVersatoreKeyOs((String) result[idx], (String) result[++idx]),
+                    formattaUrnPartUnitaDocKeyOs(unitaDoc), 1, true, S3_KEY_PAD5DIGITS_FMT);
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .message(
+                            "Errore durante calcolo URN dati specifici iniziali unità doc, idVersIniUnitaDoc {0,number,#}",
+                            aroVersIniUnitaDoc.getIdVersIniUnitaDoc())
+                    .build();
+        }
     }
 
     private String calculateBaseUrn(String versatore, String unitaDoc, long progressivo,
-	    boolean pgpad, String padFmtUsed) {
-	return MessageFormat.format(S3_KEY_URN_UPD_FMT, versatore, unitaDoc,
-		pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
+            boolean pgpad, String padFmtUsed) {
+        return MessageFormat.format(S3_KEY_URN_UPD_FMT, versatore, unitaDoc,
+                pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
     }
 
     private String formattaUrnPartVersatoreKeyOs(String nmEnte, String nmStrut) {
-	return MessageFormat.format(S3_KEY_VERSATORE_FMT, normalizingKey(nmEnte),
-		normalizingKey(nmStrut));
+        return MessageFormat.format(S3_KEY_VERSATORE_FMT, normalizingKey(nmEnte),
+                normalizingKey(nmStrut));
     }
 
     private String formattaUrnPartUnitaDocKeyOs(AroUnitaDoc ud) {
-	return MessageFormat.format(S3_KEY_UD_FMT, normalizingKey(ud.getCdRegistroKeyUnitaDoc()),
-		ud.getAaKeyUnitaDoc().toString(), normalizingKey(ud.getCdKeyUnitaDoc()));
+        return MessageFormat.format(S3_KEY_UD_FMT, normalizingKey(ud.getCdRegistroKeyUnitaDoc()),
+                ud.getAaKeyUnitaDoc().toString(), normalizingKey(ud.getCdKeyUnitaDoc()));
     }
 
     private IObjectStorageResource createResourcesUpdDatiSpecUd(String urn,
-	    Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob, Long idStrut,
-	    Long idBackend) throws IOException, AppMigrateOsS3Exception {
-	Path filepath = Files.createTempFile("dati_spec-", ".zip", MigrateUtils.POSIX_STD_ATTR);
-	try {
-	    IObjectStorageResource osResource = createUpdDatiSpecAndPutOnBucket(urn, filepath,
-		    xmlBlob.getValue());
-	    sacerDatiSpecDao.saveObjectStorageLinkDatiSpecVers(osResource.getTenant(),
-		    osResource.getS3Bucket(), osResource.getS3Key(), idStrut, xmlBlob.getKey(),
-		    idBackend);
-	    return osResource;
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().cause(e).category(ErrorCategory.S3_ERROR)
-		    .cause(e)
-		    .message(
-			    "Errore nella fase creazione risorsa per dati specifici aggionamento unità documentaria")
-		    .build();
-	} finally {
-	    Files.deleteIfExists(filepath);
-	}
+            Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob, Long idStrut,
+            Long idBackend) throws IOException, AppMigrateOsS3Exception {
+        Path filepath = Files.createTempFile("dati_spec-", ".zip", MigrateUtils.POSIX_STD_ATTR);
+        try {
+            IObjectStorageResource osResource = createUpdDatiSpecAndPutOnBucket(urn, filepath,
+                    xmlBlob.getValue());
+            sacerDatiSpecDao.saveObjectStorageLinkDatiSpecVers(osResource.getTenant(),
+                    osResource.getS3Bucket(), osResource.getS3Key(), idStrut, xmlBlob.getKey(),
+                    idBackend);
+            return osResource;
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().cause(e).category(ErrorCategory.S3_ERROR)
+                    .cause(e)
+                    .message(
+                            "Errore nella fase creazione risorsa per dati specifici aggionamento unità documentaria")
+                    .build();
+        } finally {
+            Files.deleteIfExists(filepath);
+        }
     }
 
     /**
@@ -282,13 +278,13 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @throws IOException, NoSuchAlgorithmException, SQLException In caso di errori.
      */
     private IObjectStorageResource createUpdDatiSpecAndPutOnBucket(String urn, Path filepath,
-	    Map<String, String> xmlBlob) throws IOException, NoSuchAlgorithmException {
-	createZipFile(xmlBlob, filepath);
-	String key = MigrateUtils.createS3RandomKey(urn) + ".zip";
-	String objBase64 = MigrateUtils.calculateFileBase64(filepath, super.getIntegrityType());
-	try (InputStream is = Files.newInputStream(filepath)) {
-	    return super.s3PutObjectAsFile(is, Files.size(filepath), objBase64, bucketName, key);
-	}
+            Map<String, String> xmlBlob) throws IOException, NoSuchAlgorithmException {
+        createZipFile(xmlBlob, filepath);
+        String key = MigrateUtils.createS3RandomKey(urn) + ".zip";
+        String objBase64 = MigrateUtils.calculateFileBase64(filepath, super.getIntegrityType());
+        try (InputStream is = Files.newInputStream(filepath)) {
+            return super.s3PutObjectAsFile(is, Files.size(filepath), objBase64, bucketName, key);
+        }
     }
 
     /**
@@ -300,12 +296,12 @@ public class MigrateOsDatiSpecVersS3Service extends MigrateOsS3Abstract
      * @throws IOException In caso di errore durante la creazione del file ZIP.
      */
     private void createZipFile(Map<String, String> xmlFiles, Path zipFile) throws IOException {
-	try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile))) {
-	    for (Map.Entry<String, String> entry : xmlFiles.entrySet()) {
-		out.putNextEntry(new ZipEntry(entry.getKey() + ".xml"));
-		out.write(entry.getValue().getBytes());
-		out.closeEntry();
-	    }
-	}
+        try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile))) {
+            for (Map.Entry<String, String> entry : xmlFiles.entrySet()) {
+                out.putNextEntry(new ZipEntry(entry.getKey() + ".xml"));
+                out.write(entry.getValue().getBytes());
+                out.closeEntry();
+            }
+        }
     }
 }

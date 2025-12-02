@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.runner.rest;
@@ -67,34 +63,34 @@ public class MigrateOsAipSerieEndpoint {
 
     @Inject
     public MigrateOsAipSerieEndpoint(IMigrateOsAipSerieService migrateOsAipSerieService) {
-	this.migrateOsAipSerieService = migrateOsAipSerieService;
+        this.migrateOsAipSerieService = migrateOsAipSerieService;
     }
 
     @Operation(summary = "Creazione richiesta di migrazione con tipologia oggetto: AIP_SERIE", description = "Effettua migrazione su object storage degli indici aip di una serie")
     @APIResponses(value = {
-	    @APIResponse(responseCode = "200", description = "Richiesta di migrazione OS AIP serie registrata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
-	    @APIResponse(responseCode = "400", description = "Richiesta non valida e non registrata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppBadRequestException.class))),
-	    @APIResponse(responseCode = "500", description = "Errore generico (richiesta non valida secondo specifiche)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
+            @APIResponse(responseCode = "200", description = "Richiesta di migrazione OS AIP serie registrata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
+            @APIResponse(responseCode = "400", description = "Richiesta non valida e non registrata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppBadRequestException.class))),
+            @APIResponse(responseCode = "500", description = "Errore generico (richiesta non valida secondo specifiche)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
     @POST
     @Path(RESOURCE_AIPSERIEMIGRATE)
     @Produces(MediaType.APPLICATION_JSON)
     @Blocking
     public Response migrate(
-	    @Valid @NotNull(message = "Necessario indicare un filtro di ricerca") List<MigrateRequest> osAipRequests,
-	    @Context HttpServerRequest request) {
-	// do something .....
-	MigrateResponse result = registerOsSipRequest(osAipRequests, request);
-	//
-	return Response.ok(result)
-		.lastModified(
-			Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-		.tag(new EntityTag(ETAG)).build();
+            @Valid @NotNull(message = "Necessario indicare un filtro di ricerca") List<MigrateRequest> osAipRequests,
+            @Context HttpServerRequest request) {
+        // do something .....
+        MigrateResponse result = registerOsSipRequest(osAipRequests, request);
+        //
+        return Response.ok(result)
+                .lastModified(
+                        Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .tag(new EntityTag(ETAG)).build();
     }
 
     private MigrateResponse registerOsSipRequest(List<MigrateRequest> osAipRequests,
-	    HttpServerRequest request) {
-	List<RequestDto> result = migrateOsAipSerieService
-		.registerMigrationAipSerieRequest(osAipRequests);
-	return new MigrateResponse(result, request);
+            HttpServerRequest request) {
+        List<RequestDto> result = migrateOsAipSerieService
+                .registerMigrationAipSerieRequest(osAipRequests);
+        return new MigrateResponse(result, request);
     }
 }

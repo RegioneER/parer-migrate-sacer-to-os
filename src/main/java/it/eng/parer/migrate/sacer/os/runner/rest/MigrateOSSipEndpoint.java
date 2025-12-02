@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.runner.rest;
@@ -68,34 +64,34 @@ public class MigrateOSSipEndpoint {
 
     @Inject
     public MigrateOSSipEndpoint(IMigrateOsSipService migrateOsSipService) {
-	this.migrateOsSipService = migrateOsSipService;
+        this.migrateOsSipService = migrateOsSipService;
     }
 
     @Operation(summary = "Creazione richiesta di migrazione con tipologia oggetto: SIP", description = "Effettua migrazione su object storage dei SIP di unità documentaria e aggiunta documento")
     @APIResponses(value = {
-	    @APIResponse(responseCode = "200", description = "Richiesta di migrazione OS SIP registrata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
-	    @APIResponse(responseCode = "400", description = "Richiesta non valida e non registrata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppBadRequestException.class))),
-	    @APIResponse(responseCode = "500", description = "Errore generico (richiesta non valida secondo specifiche)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
+            @APIResponse(responseCode = "200", description = "Richiesta di migrazione OS SIP registrata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
+            @APIResponse(responseCode = "400", description = "Richiesta non valida e non registrata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppBadRequestException.class))),
+            @APIResponse(responseCode = "500", description = "Errore generico (richiesta non valida secondo specifiche)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
     @POST
     @Path(RESOURCE_SIPMIGRATE)
     @Produces(MediaType.APPLICATION_JSON)
     @Blocking
     public Response migrate(
-	    @Valid @NotNull(message = "Necessario indicare un filtro di ricerca") List<MigrateRequest> osSipRequests,
-	    @Context HttpServerRequest request) {
-	// do something .....
-	MigrateResponse result = registerOsSipRequest(osSipRequests, request);
-	//
-	return Response.ok(result)
-		.lastModified(
-			Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-		.tag(new EntityTag(ETAG)).build();
+            @Valid @NotNull(message = "Necessario indicare un filtro di ricerca") List<MigrateRequest> osSipRequests,
+            @Context HttpServerRequest request) {
+        // do something .....
+        MigrateResponse result = registerOsSipRequest(osSipRequests, request);
+        //
+        return Response.ok(result)
+                .lastModified(
+                        Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .tag(new EntityTag(ETAG)).build();
     }
 
     private MigrateResponse registerOsSipRequest(List<MigrateRequest> osSipRequests,
-	    HttpServerRequest request) {
-	List<RequestDto> result = migrateOsSipService.registerMigrationSipRequest(osSipRequests);
-	return new MigrateResponse(result, request);
+            HttpServerRequest request) {
+        List<RequestDto> result = migrateOsSipService.registerMigrationSipRequest(osSipRequests);
+        return new MigrateResponse(result, request);
     }
 
 }

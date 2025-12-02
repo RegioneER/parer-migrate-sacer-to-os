@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.aipserie.dao;
@@ -49,110 +45,110 @@ public class SacerAipSerieDao implements ISacerAipSerieDao {
 
     @Override
     public Stream<Long> findIdsVerSerie(FilterDto filter) {
-	StringBuilder queryStr = new StringBuilder();
-	try {
+        StringBuilder queryStr = new StringBuilder();
+        try {
 
-	    queryStr.append("select filever.idFileVerSerie "); // ids
-	    queryStr.append("from SerFileVerSerie filever ");
-	    queryStr.append("join filever.serVerSerie server ");
+            queryStr.append("select filever.idFileVerSerie "); // ids
+            queryStr.append("from SerFileVerSerie filever ");
+            queryStr.append("join filever.serVerSerie server ");
 
-	    queryStr.append("where ");
+            queryStr.append("where ");
 
-	    if (Objects.nonNull(filter.getIdStrut())) {
-		queryStr.append("filever.idStrut = :idStrut").append(QUERY_AND);
-	    }
-	    if (Objects.nonNull(filter.getIdVerSerie())) {
-		queryStr.append("server.idVerSerie = :idVerSerie").append(QUERY_AND);
-	    }
+            if (Objects.nonNull(filter.getIdStrut())) {
+                queryStr.append("filever.idStrut = :idStrut").append(QUERY_AND);
+            }
+            if (Objects.nonNull(filter.getIdVerSerie())) {
+                queryStr.append("server.idVerSerie = :idVerSerie").append(QUERY_AND);
+            }
 
-	    // fixed (exclude verindiceaip already migrated)
-	    queryStr.append(
-		    "not exists (select 1 from SerVerSerieObjectStorage serveros where serveros.idVerSerie = server.idVerSerie)");
+            // fixed (exclude verindiceaip already migrated)
+            queryStr.append(
+                    "not exists (select 1 from SerVerSerieObjectStorage serveros where serveros.idVerSerie = server.idVerSerie)");
 
-	    TypedQuery<Long> query = entityManagerSacer.createQuery(queryStr.toString(),
-		    Long.class);
-	    // optional row limits
-	    if (!Objects.isNull(filter.getRowlimit())) {
-		query.setMaxResults(filter.getRowlimit().intValue()); // max result
-	    }
-	    // TODO: check hint for optimizations
-	    query.setHint(HibernateHints.HINT_READ_ONLY, true);
-	    // query.setHint(HibernateHints.HINT_CACHEABLE, true);
-	    // query.setHint(HibernateHints.HINT_FETCH_SIZE, Integer.valueOf("1000"));
+            TypedQuery<Long> query = entityManagerSacer.createQuery(queryStr.toString(),
+                    Long.class);
+            // optional row limits
+            if (!Objects.isNull(filter.getRowlimit())) {
+                query.setMaxResults(filter.getRowlimit().intValue()); // max result
+            }
+            // TODO: check hint for optimizations
+            query.setHint(HibernateHints.HINT_READ_ONLY, true);
+            // query.setHint(HibernateHints.HINT_CACHEABLE, true);
+            // query.setHint(HibernateHints.HINT_FETCH_SIZE, Integer.valueOf("1000"));
 
-	    if (Objects.nonNull(filter.getIdStrut())) {
-		query.setParameter("idStrut", filter.getIdStrut());
-	    }
-	    if (Objects.nonNull(filter.getIdVerSerie())) {
-		query.setParameter("idVerSerie", filter.getIdVerSerie());
-	    }
+            if (Objects.nonNull(filter.getIdStrut())) {
+                query.setParameter("idStrut", filter.getIdStrut());
+            }
+            if (Objects.nonNull(filter.getIdVerSerie())) {
+                query.setParameter("idVerSerie", filter.getIdVerSerie());
+            }
 
-	    return query.getResultStream();
-	} catch (Exception e) {
-	    throw AppGenericRuntimeException.builder().cause(e).category(ErrorCategory.HIBERNATE)
-		    .message("Errore interno nella fase ricerca degli indici aip di serie").build();
-	}
+            return query.getResultStream();
+        } catch (Exception e) {
+            throw AppGenericRuntimeException.builder().cause(e).category(ErrorCategory.HIBERNATE)
+                    .message("Errore interno nella fase ricerca degli indici aip di serie").build();
+        }
     }
 
     @Override
     public void saveObjectStorageLinkAipSerie(String tenant, String bucket, String key,
-	    Long idStrut, Long idVerIndiceAip, TiFileVerSerie tiFileVerSerie, Long idBackend) {
-	SerVerSerieObjectStorage osLink = new SerVerSerieObjectStorage();
+            Long idStrut, Long idVerIndiceAip, TiFileVerSerie tiFileVerSerie, Long idBackend) {
+        SerVerSerieObjectStorage osLink = new SerVerSerieObjectStorage();
 
-	osLink.setIdVerSerie(idVerIndiceAip);
-	osLink.setTiFileVerSerie(tiFileVerSerie.name());
-	osLink.setIdStrut(idStrut);
-	osLink.setCdKeyFile(key);
-	osLink.setNmBucket(bucket);
-	osLink.setNmTenant(tenant);
+        osLink.setIdVerSerie(idVerIndiceAip);
+        osLink.setTiFileVerSerie(tiFileVerSerie.name());
+        osLink.setIdStrut(idStrut);
+        osLink.setCdKeyFile(key);
+        osLink.setNmBucket(bucket);
+        osLink.setNmTenant(tenant);
 
-	osLink.setIdDecBackend(idBackend);
-	entityManagerSacer.persist(osLink);
-	entityManagerSacer.flush();
+        osLink.setIdDecBackend(idBackend);
+        entityManagerSacer.persist(osLink);
+        entityManagerSacer.flush();
     }
 
     @Override
     public Object[] findSerSerieAndIndiceAndFileAipByIdFileVerSerie(Long idFileVerSerie)
-	    throws AppMigrateOsS3Exception {
-	StringBuilder queryStr = new StringBuilder();
-	try {
+            throws AppMigrateOsS3Exception {
+        StringBuilder queryStr = new StringBuilder();
+        try {
 
-	    queryStr.append("select serie, verindice, filever from SerFileVerSerie filever ");
-	    queryStr.append("join filever.serVerSerie verindice ");
-	    queryStr.append("join verindice.serSerie serie ");
-	    queryStr.append("where ");
-	    queryStr.append("filever.idFileVerSerie  = :idFileVerSerie ");
+            queryStr.append("select serie, verindice, filever from SerFileVerSerie filever ");
+            queryStr.append("join filever.serVerSerie verindice ");
+            queryStr.append("join verindice.serSerie serie ");
+            queryStr.append("where ");
+            queryStr.append("filever.idFileVerSerie  = :idFileVerSerie ");
 
-	    //
-	    Query query = entityManagerSacer.createQuery(queryStr.toString());
-	    //
-	    query.setParameter("idFileVerSerie", idFileVerSerie);
+            //
+            Query query = entityManagerSacer.createQuery(queryStr.toString());
+            //
+            query.setParameter("idFileVerSerie", idFileVerSerie);
 
-	    return (Object[]) query.getSingleResult();
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.HIBERNATE).cause(e)
-		    .message(
-			    "Errore interno nella fase ricerca indice AIP serie, idFileVerSerie = {0,number,#}",
-			    idFileVerSerie)
-		    .build();
+            return (Object[]) query.getSingleResult();
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.HIBERNATE).cause(e)
+                    .message(
+                            "Errore interno nella fase ricerca indice AIP serie, idFileVerSerie = {0,number,#}",
+                            idFileVerSerie)
+                    .build();
 
-	}
+        }
     }
 
     @Override
     public void deleteBlFileVerSerie(Long idFileVerSerie) throws AppMigrateOsDeleteSrcException {
-	try {
-	    SerFileVerSerie fileVerIndiceAip = entityManagerSacer.find(SerFileVerSerie.class,
-		    idFileVerSerie);
+        try {
+            SerFileVerSerie fileVerIndiceAip = entityManagerSacer.find(SerFileVerSerie.class,
+                    idFileVerSerie);
 
-	    fileVerIndiceAip.setBlFile(null);
-	    entityManagerSacer.persist(fileVerIndiceAip);
-	    entityManagerSacer.flush();
-	} catch (Exception e) {
-	    throw AppMigrateOsDeleteSrcException.builder().cause(e)
-		    .message("Errore interno nella fase aggiornamento clob dell'indice aip ud")
-		    .build();
-	}
+            fileVerIndiceAip.setBlFile(null);
+            entityManagerSacer.persist(fileVerIndiceAip);
+            entityManagerSacer.flush();
+        } catch (Exception e) {
+            throw AppMigrateOsDeleteSrcException.builder().cause(e)
+                    .message("Errore interno nella fase aggiornamento clob dell'indice aip ud")
+                    .build();
+        }
     }
 
 }

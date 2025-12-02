@@ -1,22 +1,19 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.jpa.sacer;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
@@ -31,7 +28,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ARO_VER_INDICE_AIP_UD")
 @NamedQuery(name = "AroVerIndiceAipUd.findAll", query = "SELECT a FROM AroVerIndiceAipUd a")
-public class AroVerIndiceAipUd {
+public class AroVerIndiceAipUd implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,45 +41,45 @@ public class AroVerIndiceAipUd {
     private String cdVerIndiceAip;
 
     public AroVerIndiceAipUd() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @Column(name = "ID_VER_INDICE_AIP")
     public Long getIdVerIndiceAip() {
-	return idVerIndiceAip;
+        return idVerIndiceAip;
     }
 
     public void setIdVerIndiceAip(Long idVerIndiceAip) {
-	this.idVerIndiceAip = idVerIndiceAip;
+        this.idVerIndiceAip = idVerIndiceAip;
     }
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_INDICE_AIP")
     public AroIndiceAipUd getAroIndiceAipUd() {
-	return aroIndiceAipUd;
+        return aroIndiceAipUd;
     }
 
     public void setAroIndiceAipUd(AroIndiceAipUd aroIndiceAipUd) {
-	this.aroIndiceAipUd = aroIndiceAipUd;
+        this.aroIndiceAipUd = aroIndiceAipUd;
     }
 
     @Column(name = "PG_VER_INDICE_AIP")
     public BigDecimal getPgVerIndiceAip() {
-	return pgVerIndiceAip;
+        return pgVerIndiceAip;
     }
 
     public void setPgVerIndiceAip(BigDecimal pgVerIndiceAip) {
-	this.pgVerIndiceAip = pgVerIndiceAip;
+        this.pgVerIndiceAip = pgVerIndiceAip;
     }
 
     @Column(name = "CD_VER_INDICE_AIP")
     public String getCdVerIndiceAip() {
-	return cdVerIndiceAip;
+        return cdVerIndiceAip;
     }
 
     public void setCdVerIndiceAip(String cdVerIndiceAip) {
-	this.cdVerIndiceAip = cdVerIndiceAip;
+        this.cdVerIndiceAip = cdVerIndiceAip;
     }
 
 }

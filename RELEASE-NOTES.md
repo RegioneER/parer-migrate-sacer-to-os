@@ -1,5 +1,5 @@
-## 1.8.0 (30-05-2025)
+## 1.9.0 (02-12-2025)
 
 ### Novità: 2
-- [#37646](https://parermine.regione.emilia-romagna.it/issues/37646) Aggiornamento librerie obsolete primo quadrimestre 2025
-- [#37492](https://parermine.regione.emilia-romagna.it/issues/37492) Migratore SACER - Refactor migrazione a GCP mantenendo S3
+- [#39361](https://parermine.regione.emilia-romagna.it/issues/39361) Introduzione esecuzione task di migrazione in modalità "batch" 
+- [#39276](https://parermine.regione.emilia-romagna.it/issues/39276) Patch di sicurezza per interventi legati a CVE

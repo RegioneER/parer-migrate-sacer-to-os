@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.aip.dao;
@@ -61,84 +57,84 @@ class SacerAipDaoTest {
     @Test
     @TestTransaction
     void findIdsVerAipByIdStrutTest() {
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdStrut(8L); // fixed (PARER_TEST)
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdStrut(8L); // fixed (PARER_TEST)
 
-	assertEquals(1L, dao.findIdsVerAip(filter).count());
+        assertEquals(1L, dao.findIdsVerAip(filter).count());
     }
 
     @Test
     @TestTransaction
     void findIdsVerAipByIdUdTest() {
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdUnitadoc(56972L);
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdUnitadoc(56972L);
 
-	assertEquals(1L, dao.findIdsVerAip(filter).count());
+        assertEquals(1L, dao.findIdsVerAip(filter).count());
     }
 
     @Test
     @TestTransaction
     void saveObjectStorageLinkAipTest() {
-	assertDoesNotThrow(
-		() -> dao.saveObjectStorageLinkAip(tenant, bucketName, UUID.randomUUID().toString(),
-			1L, BigDecimal.valueOf(Year.now().getValue()), 100095989L, 1L));
+        assertDoesNotThrow(
+                () -> dao.saveObjectStorageLinkAip(tenant, bucketName, UUID.randomUUID().toString(),
+                        1L, BigDecimal.valueOf(Year.now().getValue()), 100095989L, 1L));
     }
 
     @Test
     @TestTransaction
     void findFileVerIndiceAipUdByIdVerIndiceAipTestNoException() {
-	assertDoesNotThrow(
-		() -> dao.findIndiceAndFileAipWithUdAndVrsSessByIdVerIndiceAip(1000495303L));
+        assertDoesNotThrow(
+                () -> dao.findIndiceAndFileAipWithUdAndVrsSessByIdVerIndiceAip(1000495303L));
     }
 
     @Test
     @TestTransaction
     void findFileVerIndiceAipUdByIdVerIndiceAipTestWithException() {
-	//
-	assertThrows(AppMigrateOsS3Exception.class,
-		() -> dao.findIndiceAndFileAipWithUdAndVrsSessByIdVerIndiceAip(Long.MIN_VALUE));
+        //
+        assertThrows(AppMigrateOsS3Exception.class,
+                () -> dao.findIndiceAndFileAipWithUdAndVrsSessByIdVerIndiceAip(Long.MIN_VALUE));
     }
 
     @Test
     @TestTransaction
     void deleteBlFileVerIndiceAipTestNoException() {
-	assertDoesNotThrow(() -> dao.deleteBlFileVerIndiceAip(100046577L));
+        assertDoesNotThrow(() -> dao.deleteBlFileVerIndiceAip(100046577L));
     }
 
     @Test
     @TestTransaction
     void deleteBlFileVerIndiceAipTestWithException() {
-	//
-	assertThrows(AppMigrateOsDeleteSrcException.class,
-		() -> dao.deleteBlFileVerIndiceAip(Long.MIN_VALUE));
+        //
+        assertThrows(AppMigrateOsDeleteSrcException.class,
+                () -> dao.deleteBlFileVerIndiceAip(Long.MIN_VALUE));
     }
 
     @Test
     @TestTransaction
     void findFileVerIndiceAipUdByIdStrutTestNoResult() {
-	FilterDto filter = new FilterDto();
-	filter.setIdStrut(Long.MIN_VALUE); // non-existent ID to simulate no results
+        FilterDto filter = new FilterDto();
+        filter.setIdStrut(Long.MIN_VALUE); // non-existent ID to simulate no results
 
-	assertEquals(0L, dao.findIdsVerAip(filter).count());
+        assertEquals(0L, dao.findIdsVerAip(filter).count());
     }
 
     @Test
     @TestTransaction
     void findFileVerIndiceAipUdByIdVerIndiceAipTestNoResult() {
-	FilterDto filter = new FilterDto();
-	filter.setIdVerIndiceAip(Long.MIN_VALUE); // non-existent ID to simulate no results
+        FilterDto filter = new FilterDto();
+        filter.setIdVerIndiceAip(Long.MIN_VALUE); // non-existent ID to simulate no results
 
-	assertEquals(0L, dao.findIdsVerAip(filter).count());
+        assertEquals(0L, dao.findIdsVerAip(filter).count());
     }
 
     @Test
     @TestTransaction
     void findFileVerIndiceAipUdWrongRowLimitTest() {
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(-1L); // invalid row limit
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(-1L); // invalid row limit
 
-	assertThrows(AppGenericRuntimeException.class, () -> dao.findIdsVerAip(filter));
+        assertThrows(AppGenericRuntimeException.class, () -> dao.findIdsVerAip(filter));
     }
 }

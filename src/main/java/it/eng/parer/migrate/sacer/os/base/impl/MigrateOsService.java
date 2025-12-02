@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.base.impl;
@@ -68,138 +64,138 @@ public class MigrateOsService implements IMigrateOsService {
 
     @Override
     @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public void updateOsRequest(Long idRequest, RequestCnts.State state,
-	    Optional<LocalDateTime> dtStart, Optional<LocalDateTime> dtLastUpdate,
-	    Optional<LocalDateTime> dtFinish, Optional<Long> nrFounded, Optional<Long> nrDone,
-	    Optional<String> errorDetail, Optional<String> hostname) {
-	// call dao
-	osBaseDao.updateRequest(idRequest, state, dtStart, dtLastUpdate, dtFinish, nrFounded,
-		nrDone, errorDetail, hostname);
+            Optional<LocalDateTime> dtStart, Optional<LocalDateTime> dtLastUpdate,
+            Optional<LocalDateTime> dtFinish, Optional<Long> nrFounded, Optional<Long> nrDone,
+            Optional<String> errorDetail, Optional<String> hostname) {
+        // call dao
+        osBaseDao.updateRequest(idRequest, state, dtStart, dtLastUpdate, dtFinish, nrFounded,
+                nrDone, errorDetail, hostname);
     }
 
     @Transactional(value = TxType.REQUIRED, rollbackOn = AppGenericRuntimeException.class)
     public boolean testJobskipExecution(RequestCnts.Type type) {
-	//
-	List<Requests> result = osBaseDao.findRequestsByStateTypeDtStartFinish(
-		Optional.of(RequestCnts.State.REGISTERED), Optional.empty(), Optional.empty(),
-		Optional.of(type), OsRequestOrderByCol.DT_INSERT.toString(),
-		OsRequestOrderByTo.ASC.toString(), 1);
-	return result.isEmpty();
+        //
+        List<Requests> result = osBaseDao.findRequestsByStateTypeDtStartFinish(
+                Optional.of(RequestCnts.State.REGISTERED), Optional.empty(), Optional.empty(),
+                Optional.of(type), OsRequestOrderByCol.DT_INSERT.toString(),
+                OsRequestOrderByTo.ASC.toString(), 1);
+        return result.isEmpty();
     }
 
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public Requests findAndLockOsRequestBeforeStart(RequestCnts.Type type) {
-	// call dao select with lock on write (avoid concurrency)
-	osBaseDao.lockRequests();
-	//
-	List<Requests> result = osBaseDao.findRequestsByStateTypeDtStartFinish(
-		Optional.of(RequestCnts.State.REGISTERED), Optional.empty(), Optional.empty(),
-		Optional.of(type), OsRequestOrderByCol.DT_INSERT.toString(),
-		OsRequestOrderByTo.ASC.toString(), 1);
-	if (result.isEmpty()) {
-	    throw AppGenericRuntimeException.builder().category(ErrorCategory.NOT_FOUND_ENTITY)
-		    .message("Non risultano richieste in stato {0}, non eseguo job",
-			    RequestCnts.State.REGISTERED)
-		    .build();
-	} else {
-	    //
-	    Requests request = result.get(0);
-	    log.atInfo().log("Presente richiesta UUID {} con stato {}, eseguo job",
-		    request.getUuid(), RequestCnts.State.REGISTERED);
-	    // update state to WAITING
-	    osBaseDao.updateRequest(request.getIdRequest(), RequestCnts.State.WAITING,
-		    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-		    Optional.empty(), Optional.empty(), getHostname());
+        // call dao select with lock on write (avoid concurrency)
+        osBaseDao.lockRequests();
+        //
+        List<Requests> result = osBaseDao.findRequestsByStateTypeDtStartFinish(
+                Optional.of(RequestCnts.State.REGISTERED), Optional.empty(), Optional.empty(),
+                Optional.of(type), OsRequestOrderByCol.DT_INSERT.toString(),
+                OsRequestOrderByTo.ASC.toString(), 1);
+        if (result.isEmpty()) {
+            throw AppGenericRuntimeException.builder().category(ErrorCategory.NOT_FOUND_ENTITY)
+                    .message("Non risultano richieste in stato {0}, non eseguo job",
+                            RequestCnts.State.REGISTERED)
+                    .build();
+        } else {
+            //
+            Requests request = result.get(0);
+            log.atInfo().log("Presente richiesta UUID {} con stato {}, eseguo job",
+                    request.getUuid(), RequestCnts.State.REGISTERED);
+            // update state to WAITING
+            osBaseDao.updateRequest(request.getIdRequest(), RequestCnts.State.WAITING,
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), getHostname());
 
-	    return request;
-	}
+            return request;
+        }
     }
 
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public List<RequestDto> findOsRequests(String state, String type, LocalDate dtstart,
-	    LocalDate dtfinish, String orderbycol, String orderbyto, Integer maxresult) {
-	List<RequestDto> dtos = new ArrayList<>();
-	List<Requests> requests = osBaseDao.findRequestsByStateTypeDtStartFinish(
-		StringUtils.isNotBlank(state) ? Optional.of(RequestCnts.State.valueOf(state))
-			: Optional.empty(),
-		Optional.ofNullable(dtstart), Optional.ofNullable(dtfinish),
-		StringUtils.isNotBlank(type) ? Optional.of(RequestCnts.Type.valueOf(type))
-			: Optional.empty(),
-		Optional.ofNullable(orderbycol).orElse(OsRequestOrderByCol.DT_INSERT.toString()),
-		Optional.ofNullable(orderbyto).orElse(OsRequestOrderByTo.ASC.toString()),
-		Optional.ofNullable(maxresult).orElse(100));
-	// create dto list
-	requests.forEach(r -> dtos.add(new RequestDto(r)));
-	return dtos;
+            LocalDate dtfinish, String orderbycol, String orderbyto, Integer maxresult) {
+        List<RequestDto> dtos = new ArrayList<>();
+        List<Requests> requests = osBaseDao.findRequestsByStateTypeDtStartFinish(
+                StringUtils.isNotBlank(state) ? Optional.of(RequestCnts.State.valueOf(state))
+                        : Optional.empty(),
+                Optional.ofNullable(dtstart), Optional.ofNullable(dtfinish),
+                StringUtils.isNotBlank(type) ? Optional.of(RequestCnts.Type.valueOf(type))
+                        : Optional.empty(),
+                Optional.ofNullable(orderbycol).orElse(OsRequestOrderByCol.DT_INSERT.toString()),
+                Optional.ofNullable(orderbyto).orElse(OsRequestOrderByTo.ASC.toString()),
+                Optional.ofNullable(maxresult).orElse(100));
+        // create dto list
+        requests.forEach(r -> dtos.add(new RequestDto(r)));
+        return dtos;
     }
 
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
-	    AppGenericRuntimeException.class, AppBadRequestException.class })
+            AppGenericRuntimeException.class, AppBadRequestException.class })
     public List<RequestDto> registerOsRequestByType(List<MigrateRequest> osRequests,
-	    RequestCnts.Type type) {
-	// verify duplicate inside same request
-	if (osRequests.stream()
-		.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-		.entrySet().stream().anyMatch(e -> e.getValue() > 1)) {
-	    throw AppBadRequestException.builder()
-		    .message("Richiesta non valida, presenti uno o più filtri con stesso valore")
-		    .build();
-	}
-	// result
-	List<RequestDto> requestDtos = new ArrayList<>();
-	// each one
-	osRequests.forEach(osRequest -> {
-	    FilterDto filterDto = new FilterDto(osRequest);
-	    List<String> uuids = osBaseDao.checkRequestsByStateAndFilter(filterDto, type);
-	    // register on table
-	    if (uuids.isEmpty()) {
-		Requests request = osBaseDao.createRequest(osRequest, type, tenant, nmBackend);
-		// filter
-		requestDtos.add(new RequestDto(request));
-	    } else {
-		// not registered !
-		requestDtos.add(new RequestDto(type, osRequest.deletesrc, tenant, nmBackend,
-			filterDto,
-			MessageFormat.format(
-				"Richiesta non valida, il filtro richiesto risulta in lavorazione (verificare stato richiesta/e con uuid = [{0}])",
-				String.join(", ", uuids))));
-	    }
-	});
+            RequestCnts.Type type) {
+        // verify duplicate inside same request
+        if (osRequests.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream().anyMatch(e -> e.getValue() > 1)) {
+            throw AppBadRequestException.builder()
+                    .message("Richiesta non valida, presenti uno o più filtri con stesso valore")
+                    .build();
+        }
+        // result
+        List<RequestDto> requestDtos = new ArrayList<>();
+        // each one
+        osRequests.forEach(osRequest -> {
+            FilterDto filterDto = new FilterDto(osRequest);
+            List<String> uuids = osBaseDao.checkRequestsByStateAndFilter(filterDto, type);
+            // register on table
+            if (uuids.isEmpty()) {
+                Requests request = osBaseDao.createRequest(osRequest, type, tenant, nmBackend);
+                // filter
+                requestDtos.add(new RequestDto(request));
+            } else {
+                // not registered !
+                requestDtos.add(new RequestDto(type, osRequest.deletesrc, tenant, nmBackend,
+                        filterDto,
+                        MessageFormat.format(
+                                "Richiesta non valida, il filtro richiesto risulta in lavorazione (verificare stato richiesta/e con uuid = [{0}])",
+                                String.join(", ", uuids))));
+            }
+        });
 
-	return requestDtos;
+        return requestDtos;
     }
 
     @Override
     @Transactional(value = TxType.REQUIRED)
     public RequestDto findOsRequestByUuid(final String uuid) {
-	// call dao
-	Requests request = osBaseDao.findRequestByUuid(uuid);
-	return new RequestDto(request);
+        // call dao
+        Requests request = osBaseDao.findRequestByUuid(uuid);
+        return new RequestDto(request);
     }
 
     @Override
     @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public ObjectStorage createOsObjectStorageOfObject(Long idRequest, Long pkObject,
-	    ObjectStorageCnts.State state, ObjectStorageCnts.ObjectType type,
-	    Optional<String> bucketName, Optional<String> key, Optional<String> objBase64,
-	    Optional<String> s3checksum, Optional<ObjectStorageCnts.IntegrityType> integrityType,
-	    Optional<String> errorDetail) {
-	// call dao
-	return osBaseDao.createObjectStorage(idRequest, pkObject, state, type, bucketName, key,
-		objBase64, s3checksum, integrityType, errorDetail);
+            ObjectStorageCnts.State state, ObjectStorageCnts.ObjectType type,
+            Optional<String> bucketName, Optional<String> key, Optional<String> objBase64,
+            Optional<String> s3checksum, Optional<ObjectStorageCnts.IntegrityType> integrityType,
+            Optional<String> errorDetail) {
+        // call dao
+        return osBaseDao.createObjectStorage(idRequest, pkObject, state, type, bucketName, key,
+                objBase64, s3checksum, integrityType, errorDetail);
     }
 
     @Override
     @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public RequestDto getRequestById(Long idRequest) {
-	// call dao
-	Requests request = osBaseDao.findRequestById(idRequest);
-	return new RequestDto(request);
+        // call dao
+        Requests request = osBaseDao.findRequestById(idRequest);
+        return new RequestDto(request);
     }
 
 }
