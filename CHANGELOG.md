@@ -1,4 +1,15 @@
 
+## 1.10.0 (13-01-2026)
+
+### Novità: 1
+- [#39601](https://parermine.regione.emilia-romagna.it/issues/39601) Gestione richieste di migrazione con errore "ORA-01555: snapshot too old"
+
+## 1.9.0 (02-12-2025)
+
+### Novità: 2
+- [#39361](https://parermine.regione.emilia-romagna.it/issues/39361) Introduzione esecuzione task di migrazione in modalità "batch" 
+- [#39276](https://parermine.regione.emilia-romagna.it/issues/39276) Patch di sicurezza per interventi legati a CVE
+
 ## 1.8.0 (30-05-2025)
 
 ### Novità: 2

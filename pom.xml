@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>migrate-sacer-to-os</artifactId>
-	<version>1.8.1-SNAPSHOT</version>
+	<version>1.10.0</version>
 	<name>migrate-sacer-to-os</name>
 	<description>Progetto migrate-sacer-to-os (migrate SACER lob to OS)</description>
 
 	<parent>
 		<groupId>it.eng.parer</groupId>
 		<artifactId>parer-pom</artifactId>
-		<version>7.1.0</version>
+		<version>7.1.3</version>
 	</parent>
 	
 	<properties>
@@ -22,12 +22,8 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
 		<quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.21.0</quarkus.platform.version>
-		<surefire-plugin.version>3.5.2</surefire-plugin.version>
-		<!-- commons -->
-		<commons-text.version>1.13.0</commons-text.version>
-        <commons-codec.version>1.18.0</commons-codec.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>		
+		<quarkus.platform.version>3.28.4</quarkus.platform.version>
+		<surefire-plugin.version>3.5.4</surefire-plugin.version>
 		<quarkus.custom.log.version>1.3.0</quarkus.custom.log.version>
 	</properties>
 

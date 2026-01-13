@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.base.dto;
@@ -48,115 +44,115 @@ public class RequestDto implements Serializable {
     private FilterDto filter = null;
 
     public RequestDto() {
-	super();
+        super();
     }
 
     private RequestDto(String error, Boolean deleteSrc, RequestCnts.Type type, String s3Tenant,
-	    String s3BackendName, FilterDto filter) {
-	super();
-	this.error = error;
-	this.deleteSrc = deleteSrc;
-	this.type = type;
-	this.s3Tenant = s3Tenant;
-	this.s3BackendName = s3BackendName;
-	this.filter = filter;
+            String s3BackendName, FilterDto filter) {
+        super();
+        this.error = error;
+        this.deleteSrc = deleteSrc;
+        this.type = type;
+        this.s3Tenant = s3Tenant;
+        this.s3BackendName = s3BackendName;
+        this.filter = filter;
     }
 
     private RequestDto(String uuid, LocalDateTime dtInsert, LocalDateTime dtStart,
-	    LocalDateTime dtFinish, LocalDateTime dtLastUpdate, RequestCnts.State state,
-	    Long nrFounded, Long nrDone, String error, Boolean deleteSrc, RequestCnts.Type type,
-	    String s3Tenant, String s3BackendName, String hostname, FilterDto filter) {
-	super();
-	this.uuid = uuid;
-	this.dtInsert = dtInsert;
-	this.dtStart = dtStart;
-	this.dtFinish = dtFinish;
-	this.dtLastUpdate = dtLastUpdate;
-	this.state = state;
-	this.nrFounded = nrFounded;
-	this.nrDone = nrDone;
-	this.error = error;
-	this.deleteSrc = deleteSrc;
-	this.type = type;
-	this.s3Tenant = s3Tenant;
-	this.s3BackendName = s3BackendName;
-	this.hostname = hostname;
-	this.filter = filter;
+            LocalDateTime dtFinish, LocalDateTime dtLastUpdate, RequestCnts.State state,
+            Long nrFounded, Long nrDone, String error, Boolean deleteSrc, RequestCnts.Type type,
+            String s3Tenant, String s3BackendName, String hostname, FilterDto filter) {
+        super();
+        this.uuid = uuid;
+        this.dtInsert = dtInsert;
+        this.dtStart = dtStart;
+        this.dtFinish = dtFinish;
+        this.dtLastUpdate = dtLastUpdate;
+        this.state = state;
+        this.nrFounded = nrFounded;
+        this.nrDone = nrDone;
+        this.error = error;
+        this.deleteSrc = deleteSrc;
+        this.type = type;
+        this.s3Tenant = s3Tenant;
+        this.s3BackendName = s3BackendName;
+        this.hostname = hostname;
+        this.filter = filter;
     }
 
     public RequestDto(Requests request) {
-	this(request.getUuid(), request.getDtInsert(), request.getDtStart(), request.getDtFinish(),
-		request.getDtLastUpdate(), request.getState(), request.getNrObjectFounded(),
-		request.getNrObjectMigrated(), request.getErrorDetail(),
-		request.getDeleteSourceObj(), request.getMigrationType(), request.getS3Tenant(),
-		request.getS3BanckedName(), request.getHostname(),
-		new FilterDto(request.getFilter()));
+        this(request.getUuid(), request.getDtInsert(), request.getDtStart(), request.getDtFinish(),
+                request.getDtLastUpdate(), request.getState(), request.getNrObjectFounded(),
+                request.getNrObjectMigrated(), request.getErrorDetail(),
+                request.getDeleteSourceObj(), request.getMigrationType(), request.getS3Tenant(),
+                request.getS3BanckedName(), request.getHostname(),
+                new FilterDto(request.getFilter()));
     }
 
     // empty (case of error)
     public RequestDto(RequestCnts.Type type, Boolean deleteSrc, String s3Tenant,
-	    String s3BackendName, FilterDto filter, String error) {
-	this(error, deleteSrc, type, s3Tenant, s3BackendName, filter);
+            String s3BackendName, FilterDto filter, String error) {
+        this(error, deleteSrc, type, s3Tenant, s3BackendName, filter);
     }
 
     public LocalDateTime getDtInsert() {
-	return dtInsert;
+        return dtInsert;
     }
 
     public LocalDateTime getDtStart() {
-	return dtStart;
+        return dtStart;
     }
 
     public LocalDateTime getDtFinish() {
-	return dtFinish;
+        return dtFinish;
     }
 
     public LocalDateTime getDtLastUpdate() {
-	return dtLastUpdate;
+        return dtLastUpdate;
     }
 
     public String getUuid() {
-	return uuid;
+        return uuid;
     }
 
     public RequestCnts.State getState() {
-	return state;
+        return state;
     }
 
     public Long getNrFounded() {
-	return nrFounded;
+        return nrFounded;
     }
 
     public Long getNrDone() {
-	return nrDone;
+        return nrDone;
     }
 
     public String getError() {
-	return error;
+        return error;
     }
 
     public FilterDto getFilter() {
-	return filter;
+        return filter;
     }
 
     public Boolean getDeleteSrc() {
-	return deleteSrc;
+        return deleteSrc;
     }
 
     public RequestCnts.Type getType() {
-	return type;
+        return type;
     }
 
     public String getS3Tenant() {
-	return s3Tenant;
+        return s3Tenant;
     }
 
     public String getS3BackendName() {
-	return s3BackendName;
+        return s3BackendName;
     }
 
     public String getHostname() {
-	return hostname;
+        return hostname;
     }
 
 }

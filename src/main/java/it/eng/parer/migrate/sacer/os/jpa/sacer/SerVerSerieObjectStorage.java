@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.jpa.sacer;
@@ -31,7 +27,7 @@ public class SerVerSerieObjectStorage extends AroObjectStorage {
     private static final long serialVersionUID = 1L;
 
     public SerVerSerieObjectStorage() {
-	super();
+        super();
     }
 
     private Long idVerSerieObjectStorage;
@@ -43,37 +39,37 @@ public class SerVerSerieObjectStorage extends AroObjectStorage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_VER_SERIE_OBJECT_STORAGE")
     public Long getIdVerSerieObjectStorage() {
-	return idVerSerieObjectStorage;
+        return idVerSerieObjectStorage;
     }
 
     public void setIdVerSerieObjectStorage(Long idVerSerieObjectStorage) {
-	this.idVerSerieObjectStorage = idVerSerieObjectStorage;
+        this.idVerSerieObjectStorage = idVerSerieObjectStorage;
     }
 
     @Column(name = "ID_VER_SERIE")
     public Long getIdVerSerie() {
-	return idVerSerie;
+        return idVerSerie;
     }
 
     public void setIdVerSerie(Long idVerSerie) {
-	this.idVerSerie = idVerSerie;
+        this.idVerSerie = idVerSerie;
     }
 
     @Column(name = "ID_STRUT")
     public Long getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(Long idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     @Column(name = "TI_FILE_VER_SERIE")
     public String getTiFileVerSerie() {
-	return this.tiFileVerSerie;
+        return this.tiFileVerSerie;
     }
 
     public void setTiFileVerSerie(String tiFileVerSerie) {
-	this.tiFileVerSerie = tiFileVerSerie;
+        this.tiFileVerSerie = tiFileVerSerie;
     }
 }
