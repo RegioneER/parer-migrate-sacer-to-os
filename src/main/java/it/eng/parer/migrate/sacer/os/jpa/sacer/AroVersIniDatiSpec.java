@@ -69,118 +69,118 @@ public class AroVersIniDatiSpec implements Serializable {
     @Id
     @Column(name = "ID_VERS_INI_DATI_SPEC")
     public Long getIdVersIniDatiSpec() {
-	return this.idVersIniDatiSpec;
+        return this.idVersIniDatiSpec;
     }
 
     public void setIdVersIniDatiSpec(Long idVersIniDatiSpec) {
-	this.idVersIniDatiSpec = idVersIniDatiSpec;
+        this.idVersIniDatiSpec = idVersIniDatiSpec;
     }
 
     @Lob
     @Column(name = "BL_XML_DATI_SPEC")
     public String getBlXmlDatiSpec() {
-	return this.blXmlDatiSpec;
+        return this.blXmlDatiSpec;
     }
 
     public void setBlXmlDatiSpec(String blXmlDatiSpec) {
-	this.blXmlDatiSpec = blXmlDatiSpec;
+        this.blXmlDatiSpec = blXmlDatiSpec;
     }
 
     @Column(name = "DT_REG")
     public LocalDate getDtReg() {
-	return this.dtReg;
+        return this.dtReg;
     }
 
     public void setDtReg(LocalDate dtReg) {
-	this.dtReg = dtReg;
+        this.dtReg = dtReg;
     }
 
     // bi-directional many-to-one association to OrgStrut
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT")
     public OrgStrut getOrgStrut() {
-	return this.orgStrut;
+        return this.orgStrut;
     }
 
     public void setOrgStrut(OrgStrut orgStrut) {
-	this.orgStrut = orgStrut;
+        this.orgStrut = orgStrut;
     }
 
     @Column(name = "ID_VERS_INI_COMP")
     public Long getIdVersIniComp() {
-	return this.idVersIniComp;
+        return this.idVersIniComp;
     }
 
     public void setIdVersIniComp(Long idVersIniComp) {
-	this.idVersIniComp = idVersIniComp;
+        this.idVersIniComp = idVersIniComp;
     }
 
     @Column(name = "ID_VERS_INI_DOC")
     public Long getIdVersIniDoc() {
-	return this.idVersIniDoc;
+        return this.idVersIniDoc;
     }
 
     public void setIdVersIniDoc(Long idVersIniDoc) {
-	this.idVersIniDoc = idVersIniDoc;
+        this.idVersIniDoc = idVersIniDoc;
     }
 
     // bi-directional many-to-one association to AroUnitaDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VERS_INI_UNITA_DOC")
     public AroVersIniUnitaDoc getAroVersIniUnitaDoc() {
-	return this.aroVersIniUnitaDoc;
+        return this.aroVersIniUnitaDoc;
     }
 
     public void setAroVersIniUnitaDoc(AroVersIniUnitaDoc aroVersIniUnitaDoc) {
-	this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
+        this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_ENTITA_SACER")
     public TiEntitaSacerAroVersIniDatiSpec getTiEntitaSacer() {
-	return this.tiEntitaSacer;
+        return this.tiEntitaSacer;
     }
 
     public void setTiEntitaSacer(TiEntitaSacerAroVersIniDatiSpec tiEntitaSacer) {
-	this.tiEntitaSacer = tiEntitaSacer;
+        this.tiEntitaSacer = tiEntitaSacer;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_USO_XSD")
     public TiUsoXsdAroVersIniDatiSpec getTiUsoXsd() {
-	return this.tiUsoXsd;
+        return this.tiUsoXsd;
     }
 
     public void setTiUsoXsd(TiUsoXsdAroVersIniDatiSpec tiUsoXsd) {
-	this.tiUsoXsd = tiUsoXsd;
+        this.tiUsoXsd = tiUsoXsd;
     }
 
     @Column(name = "AA_DT_REG")
     public Integer getAaDtReg() {
-	return aaDtReg;
+        return aaDtReg;
     }
 
     public void setAaDtReg(Integer aaDtReg) {
-	this.aaDtReg = aaDtReg;
+        this.aaDtReg = aaDtReg;
     }
 
     @OneToOne
     @JoinColumn(name = "ID_VERS_INI_DOC", insertable = false, updatable = false)
     public AroVersIniDoc getAroVersIniDoc() {
-	return aroVersIniDoc;
+        return aroVersIniDoc;
     }
 
     public void setAroVersIniDoc(AroVersIniDoc aroVersIniDoc) {
-	this.aroVersIniDoc = aroVersIniDoc;
+        this.aroVersIniDoc = aroVersIniDoc;
     }
 
     @OneToOne
     @JoinColumn(name = "ID_VERS_INI_COMP", insertable = false, updatable = false)
     public AroVersIniComp getAroVersIniComp() {
-	return aroVersIniComp;
+        return aroVersIniComp;
     }
 
     public void setAroVersIniComp(AroVersIniComp aroVersIniComp) {
-	this.aroVersIniComp = aroVersIniComp;
+        this.aroVersIniComp = aroVersIniComp;
     }
 }

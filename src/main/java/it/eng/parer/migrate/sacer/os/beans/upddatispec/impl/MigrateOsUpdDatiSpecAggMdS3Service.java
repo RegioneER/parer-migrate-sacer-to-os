@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.upddatispec.impl;
@@ -61,7 +57,7 @@ import jakarta.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class MigrateOsUpdDatiSpecAggMdS3Service extends MigrateOsS3Abstract
-	implements IMigrateOsUpdDatiSpecAggMdS3Service {
+        implements IMigrateOsUpdDatiSpecAggMdS3Service {
 
     @ConfigProperty(name = "s3.backend.name")
     String nmBackend;
@@ -80,211 +76,210 @@ public class MigrateOsUpdDatiSpecAggMdS3Service extends MigrateOsS3Abstract
 
     @Override
     @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
-	    AppMigrateOsS3Exception.class })
+            AppMigrateOsS3Exception.class })
     public IObjectStorageResource doMigrate(Long idSacerBackend, Long idUpdUnitaDoc, Boolean delete)
-	    throws AppMigrateOsS3Exception {
-	// 1. get AroUpdUnitaDoc
-	AroUpdUnitaDoc updUnitaDoc = sacerSipAggMetaDao.findAroUpdUnitaDocById(idUpdUnitaDoc);
-	// 2. get AroUnitaDoc
-	List<AroUpdDatiSpecUnitaDoc> datiSpec = updUnitaDoc.getAroUpdDatiSpecUnitaDocs();
+            throws AppMigrateOsS3Exception {
+        // 1. get AroUpdUnitaDoc
+        AroUpdUnitaDoc updUnitaDoc = sacerSipAggMetaDao.findAroUpdUnitaDocById(idUpdUnitaDoc);
+        // 2. get AroUnitaDoc
+        List<AroUpdDatiSpecUnitaDoc> datiSpec = updUnitaDoc.getAroUpdDatiSpecUnitaDocs();
 
-	// 4. do migrate (new transaction per single object)
-	// 4.1 create object
-	// 4.2 calculate base64 -> update on table (bucket+key+base64)
-	// 4.3 migrate (S3)
-	IObjectStorageResource osResource = null;
+        // 4. do migrate (new transaction per single object)
+        // 4.1 create object
+        // 4.2 calculate base64 -> update on table (bucket+key+base64)
+        // 4.3 migrate (S3)
+        IObjectStorageResource osResource = null;
 
-	try {
-	    // 1. create object
-	    Map<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob = createUpdDatiSpecAggMdBlob(
-		    datiSpec);
-	    // 2. calculate base64 -> update on table (bucket+key+base64)
-	    String tmpUrn = calculateUrnUpdDatiSpecAggMd(updUnitaDoc);
+        try {
+            // 1. create object
+            Map<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob = createUpdDatiSpecAggMdBlob(
+                    datiSpec);
+            // 2. calculate base64 -> update on table (bucket+key+base64)
+            String tmpUrn = calculateUrnUpdDatiSpecAggMd(updUnitaDoc);
 
-	    for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlobEntry : xmlBlob
-		    .entrySet()) {
-		osResource = createResourcesUpdDatiSpecUd(tmpUrn, versIniDatiSpecBlobEntry,
-			updUnitaDoc.getIdStrut(), idSacerBackend);
-	    }
+            for (Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlobEntry : xmlBlob
+                    .entrySet()) {
+                osResource = createResourcesUpdDatiSpecUd(tmpUrn, versIniDatiSpecBlobEntry,
+                        updUnitaDoc.getIdStrut(), idSacerBackend);
+            }
 
-	    // delete XMLs
-	    if (!Objects.isNull(delete) && delete.booleanValue()) {
-		List<Long> udpDatiSpecUnitaDocIds = datiSpec.stream()
-			.map(AroUpdDatiSpecUnitaDoc::getIdUpdDatiSpecUnitaDoc).toList();
-		sacerUpdDatiSpecAggMdDao.deleteBlUpdDatiSpecAggMd(udpDatiSpecUnitaDocIds);
-	    }
+            // delete XMLs
+            if (!Objects.isNull(delete) && delete.booleanValue()) {
+                List<Long> udpDatiSpecUnitaDocIds = datiSpec.stream()
+                        .map(AroUpdDatiSpecUnitaDoc::getIdUpdDatiSpecUnitaDoc).toList();
+                sacerUpdDatiSpecAggMdDao.deleteBlUpdDatiSpecAggMd(udpDatiSpecUnitaDocIds);
+            }
 
-	    return osResource;
-	} catch (IOException e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .message(
-			    "Errore nella fase di migrazione dei dati specifici dell'aggiornamento ud con idUpdUnitaDoc {0,number,#}",
-			    idUpdUnitaDoc)
-		    .build();
-	} catch (AppMigrateOsDeleteSrcException e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.INTERNAL_ERROR).cause(e)
-		    .osresource(osResource)
-		    .message(
-			    "Errore nella fase di migrazione dei dati specifici dell'aggiornamento ud con idUpdUnitaDoc {0,number,#}",
-			    idUpdUnitaDoc)
-		    .build();
-	}
+            return osResource;
+        } catch (IOException e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .message(
+                            "Errore nella fase di migrazione dei dati specifici dell'aggiornamento ud con idUpdUnitaDoc {0,number,#}",
+                            idUpdUnitaDoc)
+                    .build();
+        } catch (AppMigrateOsDeleteSrcException e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.INTERNAL_ERROR).cause(e)
+                    .osresource(osResource)
+                    .message(
+                            "Errore nella fase di migrazione dei dati specifici dell'aggiornamento ud con idUpdUnitaDoc {0,number,#}",
+                            idUpdUnitaDoc)
+                    .build();
+        }
     }
 
     private Map<DatiSpecLinkOsKeyMap, Map<String, String>> createUpdDatiSpecAggMdBlob(
-	    List<AroUpdDatiSpecUnitaDoc> datiSpecList) throws AppMigrateOsS3Exception {
+            List<AroUpdDatiSpecUnitaDoc> datiSpecList) throws AppMigrateOsS3Exception {
 
-	Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob = new HashMap<>();
+        Map<DatiSpecLinkOsKeyMap, Map<String, String>> versIniDatiSpecBlob = new HashMap<>();
 
-	try {
-	    datiSpecList.forEach(datiSpec -> {
-		switch (datiSpec.getTiEntitaSacer()) {
-		case UPD_UNI_DOC:
-		    DatiSpecLinkOsKeyMap keyUd = new DatiSpecLinkOsKeyMap(
-			    datiSpec.getAroUpdUnitaDoc().getIdUpdUnitaDoc(),
-			    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC.name());
-		    if (versIniDatiSpecBlob.containsKey(keyUd)) {
-			versIniDatiSpecBlob.get(keyUd).put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-		    } else {
-			Map<String, String> versIniDatiSpecUDBlob = new HashMap<>();
-			versIniDatiSpecUDBlob.put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-			versIniDatiSpecBlob.put(keyUd, versIniDatiSpecUDBlob);
-		    }
-		    break;
-		case UPD_DOC:
-		    DatiSpecLinkOsKeyMap keyDoc = new DatiSpecLinkOsKeyMap(
-			    datiSpec.getIdUpdDocUnitaDoc(),
-			    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_DOC.name());
-		    if (versIniDatiSpecBlob.containsKey(keyDoc)) {
-			versIniDatiSpecBlob.get(keyDoc).put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-		    } else {
-			Map<String, String> versIniDatiSpecDocBlob = new HashMap<>();
-			versIniDatiSpecDocBlob.put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-			versIniDatiSpecBlob.put(keyDoc, versIniDatiSpecDocBlob);
-		    }
-		    break;
-		case UPD_COMP:
-		    DatiSpecLinkOsKeyMap keyComp = new DatiSpecLinkOsKeyMap(
-			    datiSpec.getIdUpdCompUnitaDoc(),
-			    TiEntitaAroUpdDatiSpecUnitaDoc.UPD_COMP.name());
-		    if (versIniDatiSpecBlob.containsKey(keyComp)) {
-			versIniDatiSpecBlob.get(keyComp).put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-		    } else {
-			Map<String, String> versIniDatiSpecCompBlob = new HashMap<>();
-			versIniDatiSpecCompBlob.put(datiSpec.getTiUsoXsd().name(),
-				datiSpec.getBlXmlDatiSpec());
-			versIniDatiSpecBlob.put(keyComp, versIniDatiSpecCompBlob);
-		    }
-		    break;
-		}
+        try {
+            datiSpecList.forEach(datiSpec -> {
+                switch (datiSpec.getTiEntitaSacer()) {
+                case UPD_UNI_DOC:
+                    DatiSpecLinkOsKeyMap keyUd = new DatiSpecLinkOsKeyMap(
+                            datiSpec.getAroUpdUnitaDoc().getIdUpdUnitaDoc(),
+                            TiEntitaAroUpdDatiSpecUnitaDoc.UPD_UNI_DOC.name());
+                    if (versIniDatiSpecBlob.containsKey(keyUd)) {
+                        versIniDatiSpecBlob.get(keyUd).put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                    } else {
+                        Map<String, String> versIniDatiSpecUDBlob = new HashMap<>();
+                        versIniDatiSpecUDBlob.put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                        versIniDatiSpecBlob.put(keyUd, versIniDatiSpecUDBlob);
+                    }
+                    break;
+                case UPD_DOC:
+                    DatiSpecLinkOsKeyMap keyDoc = new DatiSpecLinkOsKeyMap(
+                            datiSpec.getIdUpdDocUnitaDoc(),
+                            TiEntitaAroUpdDatiSpecUnitaDoc.UPD_DOC.name());
+                    if (versIniDatiSpecBlob.containsKey(keyDoc)) {
+                        versIniDatiSpecBlob.get(keyDoc).put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                    } else {
+                        Map<String, String> versIniDatiSpecDocBlob = new HashMap<>();
+                        versIniDatiSpecDocBlob.put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                        versIniDatiSpecBlob.put(keyDoc, versIniDatiSpecDocBlob);
+                    }
+                    break;
+                case UPD_COMP:
+                    DatiSpecLinkOsKeyMap keyComp = new DatiSpecLinkOsKeyMap(
+                            datiSpec.getIdUpdCompUnitaDoc(),
+                            TiEntitaAroUpdDatiSpecUnitaDoc.UPD_COMP.name());
+                    if (versIniDatiSpecBlob.containsKey(keyComp)) {
+                        versIniDatiSpecBlob.get(keyComp).put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                    } else {
+                        Map<String, String> versIniDatiSpecCompBlob = new HashMap<>();
+                        versIniDatiSpecCompBlob.put(datiSpec.getTiUsoXsd().name(),
+                                datiSpec.getBlXmlDatiSpec());
+                        versIniDatiSpecBlob.put(keyComp, versIniDatiSpecCompBlob);
+                    }
+                    break;
+                }
 
-	    });
+            });
 
-	    return versIniDatiSpecBlob;
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .message(
-			    "Errore durante creazione mappa blob dati specifici agggiornamento unità documentaria")
-		    .build();
-	}
+            return versIniDatiSpecBlob;
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .message(
+                            "Errore durante creazione mappa blob dati specifici agggiornamento unità documentaria")
+                    .build();
+        }
     }
 
     /*
      * Calcolo dell'URN normalizzato
      */
     private String calculateUrnUpdDatiSpecAggMd(AroUpdUnitaDoc updUnitaDoc)
-	    throws AppMigrateOsS3Exception {
-	//
-	int idx = 0;
-	try {
-	    Object[] result = sacerDao.findNmEnteAndNmStrutByIdStrut(updUnitaDoc.getIdStrut());
+            throws AppMigrateOsS3Exception {
+        //
+        int idx = 0;
+        try {
+            Object[] result = sacerDao.findNmEnteAndNmStrutByIdStrut(updUnitaDoc.getIdStrut());
 
-	    return calculateBaseUrn(
-		    formattaUrnPartVersatoreKeyOs((String) result[idx], (String) result[++idx]),
-		    formattaUrnPartUnitaDocKeyOs(updUnitaDoc.getAroUnitaDoc()),
-		    updUnitaDoc.getPgUpdUnitaDoc().longValue(), true, S3_KEY_PAD5DIGITS_FMT);
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
-		    .message(
-			    "Errore durante calcolo URN dati specifici aggiornamento unità documentaria, idUpdUnitaDoc {0,number,#}",
-			    updUnitaDoc.getIdUpdUnitaDoc())
-		    .build();
-	}
+            return calculateBaseUrn(
+                    formattaUrnPartVersatoreKeyOs((String) result[idx], (String) result[++idx]),
+                    formattaUrnPartUnitaDocKeyOs(updUnitaDoc.getAroUnitaDoc()),
+                    updUnitaDoc.getPgUpdUnitaDoc().longValue(), true, S3_KEY_PAD5DIGITS_FMT);
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().category(ErrorCategory.S3_ERROR).cause(e)
+                    .message(
+                            "Errore durante calcolo URN dati specifici aggiornamento unità documentaria, idUpdUnitaDoc {0,number,#}",
+                            updUnitaDoc.getIdUpdUnitaDoc())
+                    .build();
+        }
     }
 
     private String calculateBaseUrn(String versatore, String unitaDoc, long progressivo,
-	    boolean pgpad, String padFmtUsed) {
-	return MessageFormat.format(S3_KEY_URN_UPD_FMT, versatore, unitaDoc,
-		pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
+            boolean pgpad, String padFmtUsed) {
+        return MessageFormat.format(S3_KEY_URN_UPD_FMT, versatore, unitaDoc,
+                pgpad ? String.format(padFmtUsed, progressivo) : progressivo);
     }
 
     private String formattaUrnPartVersatoreKeyOs(String nmEnte, String nmStrut) {
-	return MessageFormat.format(S3_KEY_VERSATORE_FMT, normalizingKey(nmEnte),
-		normalizingKey(nmStrut));
+        return MessageFormat.format(S3_KEY_VERSATORE_FMT, normalizingKey(nmEnte),
+                normalizingKey(nmStrut));
     }
 
     private String formattaUrnPartUnitaDocKeyOs(AroUnitaDoc ud) {
-	return MessageFormat.format(S3_KEY_UD_FMT, normalizingKey(ud.getCdRegistroKeyUnitaDoc()),
-		ud.getAaKeyUnitaDoc().toString(), normalizingKey(ud.getCdKeyUnitaDoc()));
+        return MessageFormat.format(S3_KEY_UD_FMT, normalizingKey(ud.getCdRegistroKeyUnitaDoc()),
+                ud.getAaKeyUnitaDoc().toString(), normalizingKey(ud.getCdKeyUnitaDoc()));
     }
 
     private IObjectStorageResource createResourcesUpdDatiSpecUd(final String urn,
-	    Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob, Long idStrut,
-	    Long idBackend) throws IOException, AppMigrateOsS3Exception {
-	// create tmp file
-	Path filepath = Files.createTempFile("dati_spec-", ".zip", MigrateUtils.POSIX_STD_ATTR);
-	try {
-	    IObjectStorageResource osresource = createUpdDatiSpecAndPutOnBucket(urn, filepath,
-		    xmlBlob.getValue());
-	    // link
-	    sacerUpdDatiSpecAggMdDao.saveObjectStorageLinkUpdDatiSpecAggMd(osresource.getTenant(),
-		    osresource.getS3Bucket(), osresource.getS3Key(), idStrut, xmlBlob.getKey(),
-		    idBackend);
+            Map.Entry<DatiSpecLinkOsKeyMap, Map<String, String>> xmlBlob, Long idStrut,
+            Long idBackend) throws IOException, AppMigrateOsS3Exception {
+        // create tmp file
+        Path filepath = Files.createTempFile("dati_spec-", ".zip", MigrateUtils.POSIX_STD_ATTR);
+        try {
+            IObjectStorageResource osresource = createUpdDatiSpecAndPutOnBucket(urn, filepath,
+                    xmlBlob.getValue());
+            // link
+            sacerUpdDatiSpecAggMdDao.saveObjectStorageLinkUpdDatiSpecAggMd(osresource.getTenant(),
+                    osresource.getS3Bucket(), osresource.getS3Key(), idStrut, xmlBlob.getKey(),
+                    idBackend);
 
-	    return osresource;
-	} catch (Exception e) {
-	    throw AppMigrateOsS3Exception.builder().cause(e).category(ErrorCategory.S3_ERROR)
-		    .cause(e)
-		    .message(
-			    "Errore nella fase creazione risorsa per dati specifici {0,number,#}, tipo entità {}",
-			    xmlBlob.getKey().getIdEntitySacer(),
-			    xmlBlob.getKey().getTipiEntitaSacer())
-		    .build();
-	} finally {
-	    Files.deleteIfExists(filepath);
-	}
+            return osresource;
+        } catch (Exception e) {
+            throw AppMigrateOsS3Exception.builder().cause(e).category(ErrorCategory.S3_ERROR)
+                    .cause(e)
+                    .message(
+                            "Errore nella fase creazione risorsa per dati specifici {0,number,#}, tipo entità {}",
+                            xmlBlob.getKey().getIdEntitySacer(),
+                            xmlBlob.getKey().getTipiEntitaSacer())
+                    .build();
+        } finally {
+            Files.deleteIfExists(filepath);
+        }
     }
 
     private IObjectStorageResource createUpdDatiSpecAndPutOnBucket(final String urn, Path filepath,
-	    Map<String, String> xmlBlob)
-	    throws IOException, NoSuchAlgorithmException {
-	// create key
-	final String key = MigrateUtils.createS3RandomKey(urn) + ".zip";
-	// create file
-	createZipFile(xmlBlob, filepath);
-	// sha256
-	final String objbase64 = MigrateUtils.calculateFileBase64(filepath,
-		super.getIntegrityType());
-	// put object
-	try (InputStream is = Files.newInputStream(filepath)) {
-	    return super.s3PutObjectAsFile(is, Files.size(filepath), objbase64, bucketName, key);
-	}
+            Map<String, String> xmlBlob) throws IOException, NoSuchAlgorithmException {
+        // create key
+        final String key = MigrateUtils.createS3RandomKey(urn) + ".zip";
+        // create file
+        createZipFile(xmlBlob, filepath);
+        // sha256
+        final String objbase64 = MigrateUtils.calculateFileBase64(filepath,
+                super.getIntegrityType());
+        // put object
+        try (InputStream is = Files.newInputStream(filepath)) {
+            return super.s3PutObjectAsFile(is, Files.size(filepath), objbase64, bucketName, key);
+        }
     }
 
     private void createZipFile(Map<String, String> xmlFiles, Path zipFile) throws IOException {
-	try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile))) {
-	    for (Entry<String, String> sipBlob : xmlFiles.entrySet()) {
-		ZipEntry entry = new ZipEntry(sipBlob.getKey() + ".xml");
-		out.putNextEntry(entry);
-		out.write(sipBlob.getValue().getBytes());
-		out.closeEntry();
-	    }
-	}
+        try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile))) {
+            for (Entry<String, String> sipBlob : xmlFiles.entrySet()) {
+                ZipEntry entry = new ZipEntry(sipBlob.getKey() + ".xml");
+                out.putNextEntry(entry);
+                out.write(sipBlob.getValue().getBytes());
+                out.closeEntry();
+            }
+        }
     }
 
 }

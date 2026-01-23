@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.base.impl;
@@ -65,40 +61,40 @@ class MigrateOsServiceRollbackTest {
     @TestTransaction
     void registerRequestAppGenericRuntimeException_ko() {
 
-	MigrateRequest request = new MigrateRequest(null, null, null, null, null, null, 1L, null,
-		null, 2023, 1L, true);
-	when(serviceMock.registerOsRequestByType(any(), any()))
-		.thenThrow(appGenericRuntimeException());
+        MigrateRequest request = new MigrateRequest(null, null, null, null, null, null, 1L, null,
+                null, 2023, 1L, true);
+        when(serviceMock.registerOsRequestByType(any(), any()))
+                .thenThrow(appGenericRuntimeException());
 
-	List<MigrateRequest> requests = Arrays.asList(request);
-	final AppGenericRuntimeException appException = assertThrows(
-		AppGenericRuntimeException.class,
-		() -> service.registerOsRequestByType(requests, RequestCnts.Type.SIP),
-		"Should fail throwing AppGenericRuntimeException");
-	assertEquals(ErrorCategory.INTERNAL_ERROR, appException.getCategory());
+        List<MigrateRequest> requests = Arrays.asList(request);
+        final AppGenericRuntimeException appException = assertThrows(
+                AppGenericRuntimeException.class,
+                () -> service.registerOsRequestByType(requests, RequestCnts.Type.SIP),
+                "Should fail throwing AppGenericRuntimeException");
+        assertEquals(ErrorCategory.INTERNAL_ERROR, appException.getCategory());
 
-	List<RequestDto> result = service.findOsRequests(null, RequestCnts.Type.SIP.name(),
-		LocalDate.now(), null, null, null, null);
-	assertTrue(result.isEmpty());
+        List<RequestDto> result = service.findOsRequests(null, RequestCnts.Type.SIP.name(),
+                LocalDate.now(), null, null, null, null);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     @TestTransaction
     void registerRequestAppBadRequestException_ko() {
 
-	MigrateRequest request = new MigrateRequest(null, null, null, null, null, null, 1L, null,
-		null, 2023, 1L, true);
-	when(serviceMock.registerOsRequestByType(any(), any())).thenThrow(appBadRequestException());
+        MigrateRequest request = new MigrateRequest(null, null, null, null, null, null, 1L, null,
+                null, 2023, 1L, true);
+        when(serviceMock.registerOsRequestByType(any(), any())).thenThrow(appBadRequestException());
 
-	List<MigrateRequest> requests = Arrays.asList(request);
-	final AppBadRequestException appException = assertThrows(AppBadRequestException.class,
-		() -> service.registerOsRequestByType(requests, RequestCnts.Type.SIP),
-		"Should fail throwing AppBadRequestException");
-	assertEquals(ErrorCategory.VALIDATION_ERROR, appException.getCategory());
+        List<MigrateRequest> requests = Arrays.asList(request);
+        final AppBadRequestException appException = assertThrows(AppBadRequestException.class,
+                () -> service.registerOsRequestByType(requests, RequestCnts.Type.SIP),
+                "Should fail throwing AppBadRequestException");
+        assertEquals(ErrorCategory.VALIDATION_ERROR, appException.getCategory());
 
-	List<RequestDto> result = service.findOsRequests(null, RequestCnts.Type.SIP.name(),
-		LocalDate.now(), null, null, null, null);
-	assertTrue(result.isEmpty());
+        List<RequestDto> result = service.findOsRequests(null, RequestCnts.Type.SIP.name(),
+                LocalDate.now(), null, null, null, null);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -119,12 +115,12 @@ class MigrateOsServiceRollbackTest {
     }
 
     private AppGenericRuntimeException appGenericRuntimeException() {
-	return AppGenericRuntimeException.builder().category(ErrorCategory.INTERNAL_ERROR)
-		.message("Errore generico").build();
+        return AppGenericRuntimeException.builder().category(ErrorCategory.INTERNAL_ERROR)
+                .message("Errore generico").build();
     }
 
     private AppBadRequestException appBadRequestException() {
-	return AppBadRequestException.builder().category(ErrorCategory.VALIDATION_ERROR)
-		.message("Errore generico").build();
+        return AppBadRequestException.builder().category(ErrorCategory.VALIDATION_ERROR)
+                .message("Errore generico").build();
     }
 }

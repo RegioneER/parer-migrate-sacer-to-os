@@ -1,5 +1,4 @@
-## 1.8.0 (30-05-2025)
+## 1.10.1 (23-01-2026)
 
-### Novità: 2
-- [#37646](https://parermine.regione.emilia-romagna.it/issues/37646) Aggiornamento librerie obsolete primo quadrimestre 2025
-- [#37492](https://parermine.regione.emilia-romagna.it/issues/37492) Migratore SACER - Refactor migrazione a GCP mantenendo S3
+### Bugfix: 1
+- [#39769](https://parermine.regione.emilia-romagna.it/issues/39769) Correzione mancata gestione transazionata processo di migrazione per SER_FILE_VER_SERIE_AIP / INDICE_ELENCO_VERS e ELENCO_INDICI_AIP

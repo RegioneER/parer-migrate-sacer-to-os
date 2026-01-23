@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.base.dto;
@@ -48,125 +44,125 @@ public class FilterDto implements Serializable {
     private Long idElencoVers;
 
     public FilterDto() {
-	super();
+        super();
     }
 
     private FilterDto(Long idUnitadoc, Long idDoc, Long idSessioneVers, Long idCompDoc,
-	    Long idStrut, Long idElencoVers, Long idVerIndiceAip, Long idVerSerie,
-	    LocalDate dtApertura, Integer dtAperturaYY, Long rowlimit) {
-	super();
-	this.idUnitadoc = idUnitadoc;
-	this.idDoc = idDoc;
-	this.idSessioneVers = idSessioneVers;
-	this.idCompDoc = idCompDoc;
-	this.idStrut = idStrut;
-	this.dtApertura = dtApertura;
-	this.dtAperturaYY = dtAperturaYY;
-	this.rowlimit = rowlimit;
-	this.idElencoVers = idElencoVers;
-	this.idVerIndiceAip = idVerIndiceAip;
-	this.idVerSerie = idVerSerie;
+            Long idStrut, Long idElencoVers, Long idVerIndiceAip, Long idVerSerie,
+            LocalDate dtApertura, Integer dtAperturaYY, Long rowlimit) {
+        super();
+        this.idUnitadoc = idUnitadoc;
+        this.idDoc = idDoc;
+        this.idSessioneVers = idSessioneVers;
+        this.idCompDoc = idCompDoc;
+        this.idStrut = idStrut;
+        this.dtApertura = dtApertura;
+        this.dtAperturaYY = dtAperturaYY;
+        this.rowlimit = rowlimit;
+        this.idElencoVers = idElencoVers;
+        this.idVerIndiceAip = idVerIndiceAip;
+        this.idVerSerie = idVerSerie;
     }
 
     public FilterDto(Filters filters) {
-	this(filters.getIdUnitadoc(), filters.getIdDoc(), filters.getIdSessioneVers(),
-		filters.getIdCompDoc(), filters.getIdStrut(), filters.getIdElencoVers(),
-		filters.getIdVerIndiceAip(), filters.getIdVerSerie(), filters.getDtApertura(),
-		filters.getDtAperturaYY(), filters.getRowlimit());
+        this(filters.getIdUnitadoc(), filters.getIdDoc(), filters.getIdSessioneVers(),
+                filters.getIdCompDoc(), filters.getIdStrut(), filters.getIdElencoVers(),
+                filters.getIdVerIndiceAip(), filters.getIdVerSerie(), filters.getDtApertura(),
+                filters.getDtAperturaYY(), filters.getRowlimit());
     }
 
     public FilterDto(MigrateRequest request) {
-	this(request.idunitadoc, request.iddoc, request.idsessionvers, request.idcomp,
-		request.idstrut, request.idelencovers, request.idverindiceaip, request.idverserie,
-		request.dtapertura, request.dtaperturayy, request.rowlimit);
+        this(request.idunitadoc, request.iddoc, request.idsessionvers, request.idcomp,
+                request.idstrut, request.idelencovers, request.idverindiceaip, request.idverserie,
+                request.dtapertura, request.dtaperturayy, request.rowlimit);
     }
 
     public Long getIdUnitadoc() {
-	return idUnitadoc;
+        return idUnitadoc;
     }
 
     public void setIdUnitadoc(Long idUnitadoc) {
-	this.idUnitadoc = idUnitadoc;
+        this.idUnitadoc = idUnitadoc;
     }
 
     public Long getIdDoc() {
-	return idDoc;
+        return idDoc;
     }
 
     public void setIdDoc(Long idDoc) {
-	this.idDoc = idDoc;
+        this.idDoc = idDoc;
     }
 
     public Long getIdSessioneVers() {
-	return idSessioneVers;
+        return idSessioneVers;
     }
 
     public void setIdSessioneVers(Long idSessioneVers) {
-	this.idSessioneVers = idSessioneVers;
+        this.idSessioneVers = idSessioneVers;
     }
 
     public Long getIdStrut() {
-	return idStrut;
+        return idStrut;
     }
 
     public void setIdStrut(Long idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     public Long getRowlimit() {
-	return rowlimit;
+        return rowlimit;
     }
 
     public void setRowlimit(Long rowlimit) {
-	this.rowlimit = rowlimit;
+        this.rowlimit = rowlimit;
     }
 
     public LocalDate getDtApertura() {
-	return dtApertura;
+        return dtApertura;
     }
 
     public void setDtApertura(LocalDate dtApertura) {
-	this.dtApertura = dtApertura;
+        this.dtApertura = dtApertura;
     }
 
     public Integer getDtAperturaYY() {
-	return dtAperturaYY;
+        return dtAperturaYY;
     }
 
     public void setDtAperturaYY(Integer dtAperturaYY) {
-	this.dtAperturaYY = dtAperturaYY;
+        this.dtAperturaYY = dtAperturaYY;
     }
 
     public Long getIdCompDoc() {
-	return idCompDoc;
+        return idCompDoc;
     }
 
     public void setIdCompDoc(Long idCompDoc) {
-	this.idCompDoc = idCompDoc;
+        this.idCompDoc = idCompDoc;
     }
 
     public Long getIdElencoVers() {
-	return idElencoVers;
+        return idElencoVers;
     }
 
     public void setIdElencoVers(Long idElencoVers) {
-	this.idElencoVers = idElencoVers;
+        this.idElencoVers = idElencoVers;
     }
 
     public Long getIdVerIndiceAip() {
-	return idVerIndiceAip;
+        return idVerIndiceAip;
     }
 
     public void setIdVerIndiceAip(Long idVerIndiceAip) {
-	this.idVerIndiceAip = idVerIndiceAip;
+        this.idVerIndiceAip = idVerIndiceAip;
     }
 
     public Long getIdVerSerie() {
-	return idVerSerie;
+        return idVerSerie;
     }
 
     public void setIdVerSerie(Long idVerSerie) {
-	this.idVerSerie = idVerSerie;
+        this.idVerSerie = idVerSerie;
     }
 
 }

@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.elenchivers.dao;
@@ -57,63 +53,63 @@ class SacerElvElencoVersDaoTest {
     @Test
     @TestTransaction
     void findIdsElvElencoVersByIdStrutTest() {
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdStrut(8L); // fixed (PARER_TEST)
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdStrut(8L); // fixed (PARER_TEST)
 
-	assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
+        assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
     }
 
     @Test
     @TestTransaction
     void findIdsElvElencoVersByIdElencoVersTest() {
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdElencoVers(212L);
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdElencoVers(212L);
 
-	assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
+        assertEquals(1L, dao.findIdsElvElencoVers(filter).count());
     }
 
     @Test
     @TestTransaction
     void saveObjectStorageLinkFileElencoVersUdTest() {
-	assertDoesNotThrow(() -> dao.saveObjectStorageLinkFileElencoVersUd(tenant, bucketName,
-		UUID.randomUUID().toString(), 3L, 1L));
+        assertDoesNotThrow(() -> dao.saveObjectStorageLinkFileElencoVersUd(tenant, bucketName,
+                UUID.randomUUID().toString(), 3L, 1L));
     }
 
     @Test
     @TestTransaction
     void findFileElencoVersByIdFileElencoVersTestNoException() {
-	assertDoesNotThrow(() -> dao.findFileElencoVersByIdFileElencoVers(1L));
+        assertDoesNotThrow(() -> dao.findFileElencoVersByIdFileElencoVers(1L));
     }
 
     @Test
     @TestTransaction
     void deleteBlFileElencoVersTestNoException() {
-	assertDoesNotThrow(() -> dao.deleteBlFileElencoVers(277822406L));
+        assertDoesNotThrow(() -> dao.deleteBlFileElencoVers(277822406L));
     }
 
     @Test
     @TestTransaction
     void deleteBlFileElencoVersTestWithException() {
-	//
-	assertThrows(AppMigrateOsDeleteSrcException.class,
-		() -> dao.deleteBlFileElencoVers(Long.MIN_VALUE));
+        //
+        assertThrows(AppMigrateOsDeleteSrcException.class,
+                () -> dao.deleteBlFileElencoVers(Long.MIN_VALUE));
     }
 
     @Test
     @TestTransaction
     void findElencoVersByIdTestNoException() {
-	assertDoesNotThrow(() -> dao.findElencoVersById(396835216L));
+        assertDoesNotThrow(() -> dao.findElencoVersById(396835216L));
     }
 
     @Test
     @TestTransaction
     void findIdsElvElencoVersAsStreamTestWithInvalidFilter() {
-	FilterDto filter = new FilterDto();
-	filter.setIdStrut(Long.MIN_VALUE); // invalid structure ID
+        FilterDto filter = new FilterDto();
+        filter.setIdStrut(Long.MIN_VALUE); // invalid structure ID
 
-	assertEquals(0L, dao.findIdsElvElencoVers(filter).count());
+        assertEquals(0L, dao.findIdsElvElencoVers(filter).count());
     }
 
 }

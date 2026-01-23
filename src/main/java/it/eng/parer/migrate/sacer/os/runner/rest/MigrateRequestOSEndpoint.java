@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.runner.rest;
@@ -80,68 +76,68 @@ public class MigrateRequestOSEndpoint {
 
     @Inject
     public MigrateRequestOSEndpoint(IMigrateOsService migrateOsService) {
-	this.migrateOsService = migrateOsService;
+        this.migrateOsService = migrateOsService;
     }
 
     @Operation(summary = "Lista richieste di migrazione OS applicando con filtro", description = "Lista richieste di migrazione OS SIP applicando con filtro")
     @APIResponses(value = {
-	    @APIResponse(responseCode = "200", description = "Lista recuperata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
-	    @APIResponse(responseCode = "500", description = "Errore generico", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
+            @APIResponse(responseCode = "200", description = "Lista recuperata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
+            @APIResponse(responseCode = "500", description = "Errore generico", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
     @GET
     @Path(RESOURCE_REQUESTS)
     @Produces(MediaType.APPLICATION_JSON)
     @Blocking
     public Response requestCnts(
-	    @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, implementation = RequestCnts.State.class)) @QueryParam(value = "state") String state,
-	    @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, implementation = RequestCnts.Type.class)) @QueryParam(value = "type") String type,
-	    @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, format = "YYYY-mm-dd", implementation = LocalDate.class)) @QueryParam(value = "dtstart") LocalDate dtstart,
-	    @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, format = "YYYY-mm-dd", implementation = LocalDate.class)) @QueryParam(value = "dtfinish") LocalDate dtfinish,
-	    @Parameter(allowEmptyValue = false, schema = @Schema(type = SchemaType.STRING, required = true, implementation = OsRequestOrderByCol.class)) @DefaultValue(value = "DT_INSERT") @QueryParam(value = "orderbycol") String orderbycol,
-	    @Parameter(allowEmptyValue = false, schema = @Schema(type = SchemaType.STRING, required = true, implementation = OsRequestOrderByTo.class)) @DefaultValue(value = "ASC") @QueryParam(value = "orderbyto") String orderbyto,
-	    @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.INTEGER, required = false, implementation = Integer.class)) @DefaultValue(value = "100") @QueryParam(value = "maxresult") Integer maxresult,
-	    @Context HttpServerRequest request) {
-	// do something .....
-	MigrateResponse results = listOfOsSipRequests(state, type, dtstart, dtfinish, request,
-		orderbycol, orderbyto, maxresult);
-	//
-	return Response.ok(results)
-		.lastModified(
-			Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-		.tag(new EntityTag(ETAG)).build();
+            @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, implementation = RequestCnts.State.class)) @QueryParam(value = "state") String state,
+            @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, implementation = RequestCnts.Type.class)) @QueryParam(value = "type") String type,
+            @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, format = "YYYY-mm-dd", implementation = LocalDate.class)) @QueryParam(value = "dtstart") LocalDate dtstart,
+            @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.STRING, required = false, format = "YYYY-mm-dd", implementation = LocalDate.class)) @QueryParam(value = "dtfinish") LocalDate dtfinish,
+            @Parameter(allowEmptyValue = false, schema = @Schema(type = SchemaType.STRING, required = true, implementation = OsRequestOrderByCol.class)) @DefaultValue(value = "DT_INSERT") @QueryParam(value = "orderbycol") String orderbycol,
+            @Parameter(allowEmptyValue = false, schema = @Schema(type = SchemaType.STRING, required = true, implementation = OsRequestOrderByTo.class)) @DefaultValue(value = "ASC") @QueryParam(value = "orderbyto") String orderbyto,
+            @Parameter(allowEmptyValue = true, schema = @Schema(type = SchemaType.INTEGER, required = false, implementation = Integer.class)) @DefaultValue(value = "100") @QueryParam(value = "maxresult") Integer maxresult,
+            @Context HttpServerRequest request) {
+        // do something .....
+        MigrateResponse results = listOfOsSipRequests(state, type, dtstart, dtfinish, request,
+                orderbycol, orderbyto, maxresult);
+        //
+        return Response.ok(results)
+                .lastModified(
+                        Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .tag(new EntityTag(ETAG)).build();
     }
 
     @Operation(summary = "Verifica stato richiesta migrazione OS", description = "Verifica stato richiesta migrazione OS SIP")
     @APIResponses(value = {
-	    @APIResponse(responseCode = "200", description = "Richiesta recuperata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
-	    @APIResponse(responseCode = "404", description = "Richiesta non esistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppEntityNotFoundException.class))),
-	    @APIResponse(responseCode = "500", description = "Errore generico", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
+            @APIResponse(responseCode = "200", description = "Richiesta recuperata con successo", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MigrateResponse.class))),
+            @APIResponse(responseCode = "404", description = "Richiesta non esistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppEntityNotFoundException.class))),
+            @APIResponse(responseCode = "500", description = "Errore generico", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppGenericRuntimeException.class))) })
     @GET
     @Path(RESOURCE_REQUEST + "/{uuid}")
     @Produces(MediaType.APPLICATION_JSON)
     @Blocking
     public Response requestByUuid(@PathParam(value = "uuid") String uuid,
-	    @Context HttpServerRequest request) {
+            @Context HttpServerRequest request) {
 
-	// do something .....
-	MigrateResponse result = getOsRequest(uuid, request);
-	//
-	return Response.ok(result)
-		.lastModified(Date.from(result.requests.get(0).getDtLastUpdate()
-			.atZone(ZoneId.systemDefault()).toInstant()))
-		.tag(new EntityTag(ETAG)).build();
+        // do something .....
+        MigrateResponse result = getOsRequest(uuid, request);
+        //
+        return Response.ok(result)
+                .lastModified(Date.from(result.requests.get(0).getDtLastUpdate()
+                        .atZone(ZoneId.systemDefault()).toInstant()))
+                .tag(new EntityTag(ETAG)).build();
     }
 
     private MigrateResponse getOsRequest(String uuid, HttpServerRequest request) {
-	RequestDto result = migrateOsService.findOsRequestByUuid(uuid);
-	return new MigrateResponse(Arrays.asList(result), request);
+        RequestDto result = migrateOsService.findOsRequestByUuid(uuid);
+        return new MigrateResponse(Arrays.asList(result), request);
     }
 
     private MigrateResponse listOfOsSipRequests(String state, String type, LocalDate dtstart,
-	    LocalDate dtfinish, HttpServerRequest request, String orderby, String orderbyto,
-	    Integer maxresult) {
-	//
-	List<RequestDto> results = migrateOsService.findOsRequests(state, type, dtstart, dtfinish,
-		orderby, orderbyto, maxresult);
-	return new MigrateResponse(results, request);
+            LocalDate dtfinish, HttpServerRequest request, String orderby, String orderbyto,
+            Integer maxresult) {
+        //
+        List<RequestDto> results = migrateOsService.findOsRequests(state, type, dtstart, dtfinish,
+                orderby, orderbyto, maxresult);
+        return new MigrateResponse(results, request);
     }
 }

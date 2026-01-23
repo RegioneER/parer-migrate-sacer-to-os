@@ -8,13 +8,13 @@ Fonte template redazione documento:  https://www.makeareadme.com/.
 
 # Descrizione
 
-Applicazione progettata allo scopo di gestire il processo di "migrazione" di un documento (o file) presente su base dati SACER. I documenti / componenti dell'unità documentaria vengono "persistiti" su base dati sotto forma di BLOB (binary large object) o CLOB (large text data), attraverso delle apposite API RESTFul opportunamente esposte ed invocabili, è possibile innescare la migrazione di tutti gli oggetti associati alla struttura SACER verso l'Object Storage opportunamente configurato.
+Applicazione progettata per gestire la migrazione di supporto di un file o un bitstream presente sulla base dati Sacer verso l'object storage di destinazione. L'applicazoine consente, attraverso delle apposite API RESTFul opportunamente esposte e invocabili, di migrare tutti gli oggetti relativi a una determinata struttura Sacer (persistiti su database sotto forma di BLOB (binary large object) o CLOB (large text data)) verso l'Object Storage di destinazione opportunamente configurato.
 
-Il processo quindi si occupa non solo di "spostare" il singolo documento verso un determinato bucket ma anche di "mapparlo" opportunamente, secondo i requirements di processo richieste dall'applicazione SACER.
+Il processo non si limita a spostare il singolo oggetto verso un determinato bucket ma lo mappa opportunamente, secondo i requisiti di processo richiesti da Sacer.
 
 # Installazione
 
-Di seguito verranno riportati sotto alcuni paragrafi, le modalità possibili con cui è possibile rendere operativo il microservizio. 
+Di seguito sono riportate le varie modalità con cui è possibile rendere operativo questo microservizio. 
 
 ## Rilascio su RedHat Openshift
 

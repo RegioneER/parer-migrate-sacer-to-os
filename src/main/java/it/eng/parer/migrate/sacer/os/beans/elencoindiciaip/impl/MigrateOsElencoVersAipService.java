@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.elencoindiciaip.impl;
@@ -40,7 +36,7 @@ import jakarta.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class MigrateOsElencoVersAipService extends MigrateOsAbstract
-	implements IMigrateOsElencoVersAipService {
+        implements IMigrateOsElencoVersAipService {
 
     @Inject
     ISacerElencoVersAipDao sacerElencoVersAipDao;
@@ -50,32 +46,32 @@ public class MigrateOsElencoVersAipService extends MigrateOsAbstract
 
     @Override
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
-	    AppGenericRuntimeException.class })
+            AppGenericRuntimeException.class })
     public void processMigrationIndiceAipElencoVersUdFromRequest(Long idRequest) {
-	super.processMigrationRequest(idRequest);
+        super.processMigrationRequest(idRequest);
     }
 
     @Override
     public List<RequestDto> registerMigrationIndiceAipElencoVersUdRequest(
-	    List<MigrateRequest> osElencoVersAipRequests) {
-	return super.registerRequestByType(osElencoVersAipRequests,
-		RequestCnts.Type.ELENCO_INDICI_AIP);
+            List<MigrateRequest> osElencoVersAipRequests) {
+        return super.registerRequestByType(osElencoVersAipRequests,
+                RequestCnts.Type.ELENCO_INDICI_AIP);
     }
 
     @Override
     protected ObjectType getObjType() {
-	return ObjectStorageCnts.ObjectType.ELENCO_INDICI_AIP;
+        return ObjectStorageCnts.ObjectType.ELENCO_INDICI_AIP;
     }
 
     @Override
     protected Stream<Long> findObjIdsByFilter(FilterDto filter) {
-	return sacerElencoVersAipDao.findIdsElvElencoVers(filter);
+        return sacerElencoVersAipDao.findIdsElvElencoVers(filter);
     }
 
     @Override
     protected IObjectStorageResource executeMigrateViaS3(Long idSacerBackend, Long objId,
-	    Boolean deleteSrc) throws AppMigrateOsS3Exception {
-	return osElencoVersAipS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
+            Boolean deleteSrc) throws AppMigrateOsS3Exception {
+        return osElencoVersAipS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
     }
 
 }

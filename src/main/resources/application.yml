@@ -41,13 +41,17 @@ quarkus:
   hibernate-orm:
     packages: "it.eng.parer.migrate.sacer.os.jpa.entity"
     dialect: "org.hibernate.dialect.OracleDialect"
-    database:
-      generation: "none"
+    schema-management:
+      strategy: "none"
+    jdbc:
+      statement-fetch-size: 1000
     sacer:
       packages: "it.eng.parer.migrate.sacer.os.jpa.sacer"
       dialect: "org.hibernate.dialect.OracleDialect"
-      database:
-        generation: "none"
+      schema-management:
+        strategy: "none"
+      jdbc:
+        statement-fetch-size: 1000
       datasource: "sacer"
   smallrye-openapi:
     info-title: "Migrazione SACER Object Storage API"
@@ -134,9 +138,8 @@ job:
       validate-in-dev-mode: false
       dialect: "org.hibernate.dialect.H2Dialect"
       database:
-        generation: "update"
-      jdbc:
-        statement-fetch-size: 1000
+      schema-management:
+        strategy: "update"
       #fetch:
       #batch-size: 1000 # default 16
       #validate-in-dev-mode: false

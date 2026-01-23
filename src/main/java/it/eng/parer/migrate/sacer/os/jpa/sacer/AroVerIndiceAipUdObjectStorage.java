@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.jpa.sacer;
@@ -41,45 +37,45 @@ public class AroVerIndiceAipUdObjectStorage extends AroObjectStorage {
     private BigDecimal aaKeyUnitaDoc;
 
     public AroVerIndiceAipUdObjectStorage() {
-	super();
+        super();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_VER_INDICE_AIP_UD_OBJECT_STORAGE")
     public Long getIdVerIndiceAipUdObjectStorage() {
-	return idVerIndiceAipUdObjectStorage;
+        return idVerIndiceAipUdObjectStorage;
     }
 
     public void setIdVerIndiceAipUdObjectStorage(Long idVerIndiceAipUdObjectStorage) {
-	this.idVerIndiceAipUdObjectStorage = idVerIndiceAipUdObjectStorage;
+        this.idVerIndiceAipUdObjectStorage = idVerIndiceAipUdObjectStorage;
     }
 
     @Column(name = "ID_VER_INDICE_AIP")
     public Long getIdVerIndiceAipUd() {
-	return idVerIndiceAipUd;
+        return idVerIndiceAipUd;
     }
 
     public void setIdVerIndiceAipUd(Long idVerIndiceAipUd) {
-	this.idVerIndiceAipUd = idVerIndiceAipUd;
+        this.idVerIndiceAipUd = idVerIndiceAipUd;
     }
 
     @Column(name = "ID_SUB_STRUT")
     public Long getIdSubStrut() {
-	return idSubStrut;
+        return idSubStrut;
     }
 
     public void setIdSubStrut(Long idSubStrut) {
-	this.idSubStrut = idSubStrut;
+        this.idSubStrut = idSubStrut;
     }
 
     @Column(name = "AA_KEY_UNITA_DOC")
     public BigDecimal getAaKeyUnitaDoc() {
-	return aaKeyUnitaDoc;
+        return aaKeyUnitaDoc;
     }
 
     public void setAaKeyUnitaDoc(BigDecimal aaKeyUnitaDoc) {
-	this.aaKeyUnitaDoc = aaKeyUnitaDoc;
+        this.aaKeyUnitaDoc = aaKeyUnitaDoc;
     }
 
 }

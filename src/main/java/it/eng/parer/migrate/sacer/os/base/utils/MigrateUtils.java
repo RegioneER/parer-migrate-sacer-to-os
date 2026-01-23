@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.base.utils;
@@ -37,7 +33,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -53,21 +48,21 @@ public class MigrateUtils {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public static final FileAttribute<Set<PosixFilePermission>> POSIX_STD_ATTR = PosixFilePermissions
-	    .asFileAttribute(PosixFilePermissions.fromString("rw-------"));
+            .asFileAttribute(PosixFilePermissions.fromString("rw-------"));
 
     private MigrateUtils() {
-	throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Utility class");
     }
 
     /*
      * Get the name of the host if null -> return empty
      */
     public static final Optional<String> getHostname() {
-	try {
-	    return Optional.of(InetAddress.getLocalHost().getHostName());
-	} catch (UnknownHostException e) {
-	    return Optional.empty();
-	}
+        try {
+            return Optional.of(InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -85,41 +80,41 @@ public class MigrateUtils {
      * @throws IOException              eccezione generica
      */
     public static String calculateFileBase64(Path tempFile, ChecksumAlghoritm checksumAlghoritm)
-	    throws NoSuchAlgorithmException, IOException {
-	byte[] value = null;
+            throws NoSuchAlgorithmException, IOException {
+        byte[] value = null;
 
-	if (checksumAlghoritm.compareTo(ChecksumAlghoritm.CRC32C) == 0) {
-	    value = calculateCRC32C(tempFile, BUFFER_10M);
-	} else {
-	    value = calculateDigest(tempFile, checksumAlghoritm.getInstance(), BUFFER_10M);
-	}
+        if (checksumAlghoritm.compareTo(ChecksumAlghoritm.CRC32C) == 0) {
+            value = calculateCRC32C(tempFile, BUFFER_10M);
+        } else {
+            value = calculateDigest(tempFile, checksumAlghoritm.getInstance(), BUFFER_10M);
+        }
 
-	return Base64.getEncoder().encodeToString(value);
+        return Base64.getEncoder().encodeToString(value);
     }
 
     private static byte[] calculateDigest(Path tempFile, String intance, Integer size)
-	    throws NoSuchAlgorithmException, IOException {
-	byte[] buffer = new byte[size];
-	int readed;
-	MessageDigest digester = MessageDigest.getInstance(intance);
-	try (InputStream is = Files.newInputStream(tempFile)) {
-	    while ((readed = is.read(buffer)) != -1) {
-		digester.update(buffer, 0, readed);
-	    }
-	}
-	return digester.digest();
+            throws NoSuchAlgorithmException, IOException {
+        byte[] buffer = new byte[size];
+        int readed;
+        MessageDigest digester = MessageDigest.getInstance(intance);
+        try (InputStream is = Files.newInputStream(tempFile)) {
+            while ((readed = is.read(buffer)) != -1) {
+                digester.update(buffer, 0, readed);
+            }
+        }
+        return digester.digest();
     }
 
     private static byte[] calculateCRC32C(Path tempFile, Integer size) throws IOException {
-	byte[] buffer = new byte[size];
-	int readed;
-	CRC32CChecksum cRC32CChecksum = new CRC32CChecksum();
-	try (InputStream is = Files.newInputStream(tempFile)) {
-	    while ((readed = is.read(buffer)) != -1) {
-		cRC32CChecksum.update(buffer, 0, readed);
-	    }
-	}
-	return cRC32CChecksum.getValueAsBytes();
+        byte[] buffer = new byte[size];
+        int readed;
+        CRC32CChecksum cRC32CChecksum = new CRC32CChecksum();
+        try (InputStream is = Files.newInputStream(tempFile)) {
+            while ((readed = is.read(buffer)) != -1) {
+                cRC32CChecksum.update(buffer, 0, readed);
+            }
+        }
+        return cRC32CChecksum.getValueAsBytes();
     }
 
     /**
@@ -139,10 +134,10 @@ public class MigrateUtils {
      */
     public static String createS3RandomKey(final String urn) {
 
-	String when = DateTimeFormatter.ofPattern(S3_KEY_PREFIX_BYDATE_FMT)
-		.withZone(ZoneId.systemDefault()).format(Instant.now());
+        String when = DateTimeFormatter.ofPattern(S3_KEY_PREFIX_BYDATE_FMT)
+                .withZone(ZoneId.systemDefault()).format(Instant.now());
 
-	return when + "/" + urn + "/" + UUID.randomUUID().toString();
+        return when + "/" + urn + "/" + UUID.randomUUID().toString();
     }
 
     /**
@@ -151,11 +146,11 @@ public class MigrateUtils {
      * @return {@link Map} con metadati
      */
     public static Map<String, String> defaultS3Metadata(final String instanceUUID) {
-	Map<String, String> defaultMetadata = new HashMap<>();
-	defaultMetadata.put("ingest-node", "migrate-os-" + instanceUUID);
-	defaultMetadata.put("ingest-time",
-		ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
-	return defaultMetadata;
+        Map<String, String> defaultMetadata = new HashMap<>();
+        defaultMetadata.put("ingest-node", "migrate-os-" + instanceUUID);
+        defaultMetadata.put("ingest-time",
+                ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
+        return defaultMetadata;
     }
 
     /*
@@ -164,23 +159,48 @@ public class MigrateUtils {
      * numeri, '.', '-' e '_'. Tutto il resto viene convertito in '_'.
      */
     public static String normalizingKey(String value) {
-	return Normalizer.normalize(value, Normalizer.Form.NFD).replace(" ", "_")
-		.replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
-		.replaceAll("[^A-Za-z0-9\\. _-]", "_");
+        return Normalizer.normalize(value, Normalizer.Form.NFD).replace(" ", "_")
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .replaceAll("[^A-Za-z0-9\\. _-]", "_");
     }
 
     /**
-     * Formatta la data di creazione dell'elenco in una stringa nel formato "yyyyMMdd"
+     * Formatta la data in una stringa nel formato "yyyyMMdd"
      *
-     * @param dtCreazioneElenco la data di creazione dell'elenco
+     * @param localDate la data di creazione dell'elenco
      *
      * @return la data formattata come stringa
      */
-    public static String formatDateAsStr(Date dtToConvert) {
-	// Convert java.util.Date to java.time.LocalDate
-	LocalDate localDate = dtToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	// Format the date using DateTimeFormatter
-	return localDate.format(DATE_FORMATTER);
+    public static String formatDateAsStr(LocalDate localDate) {
+        // Format the date using DateTimeFormatter
+        return localDate.format(DATE_FORMATTER);
+    }
+
+    /**
+     * Controlla se l'eccezione o una delle sue cause è dovuta a un errore di tipo "snapshot too
+     * old" in Oracle o altri da aggiungere nel futuro.
+     *
+     * @param e l'eccezione da controllare
+     * @return true se l'eccezione o una delle sue cause è un errore di tipo "snapshot too old",
+     *         false altrimenti
+     */
+    public static boolean handleExceptionForRetry(Throwable e) {
+        final Set<String> retryKeywords = Set.of("ORA-01555", "SNAPSHOT TOO OLD",
+                "ROLLBACK SEGMENT");
+        Throwable cause = e;
+        while (cause != null) {
+            String message = cause.getMessage();
+            if (message != null) {
+                String upperMsg = message.toUpperCase();
+                for (String keyword : retryKeywords) {
+                    if (upperMsg.contains(keyword)) {
+                        return true;
+                    }
+                }
+            }
+            cause = cause.getCause();
+        }
+        return false;
     }
 
 }

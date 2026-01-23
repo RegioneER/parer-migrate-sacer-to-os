@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -49,31 +45,31 @@ public class ApplicationInfo {
 
     @PostConstruct
     public void init() throws IOException {
-	try (InputStream input = getClass().getResourceAsStream("/git.properties")) {
-	    git = new Properties();
-	    // load a properties file
-	    git.load(input);
-	}
+        try (InputStream input = getClass().getResourceAsStream("/git.properties")) {
+            git = new Properties();
+            // load a properties file
+            git.load(input);
+        }
     }
 
     public Optional<String> getVersion() {
-	return version;
+        return version;
     }
 
     public Optional<String> getSwagger() {
-	return swagger;
+        return swagger;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public Properties getGit() {
-	return git;
+        return git;
     }
 
     public String getIndex() {
-	return index;
+        return index;
     }
 
 }

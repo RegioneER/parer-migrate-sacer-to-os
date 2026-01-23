@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.comp.impl;
@@ -52,33 +48,33 @@ public class MigrateOsCompService extends MigrateOsAbstract implements IMigrateO
 
     @Override
     public void processMigrationCompFromRequest(Long idRequest) {
-	super.processMigrationRequest(idRequest);
+        super.processMigrationRequest(idRequest);
     }
 
     @Override
     public List<RequestDto> registerMigrationCompRequest(List<MigrateRequest> osCompRequests) {
-	return super.registerRequestByType(osCompRequests, RequestCnts.Type.COMP);
+        return super.registerRequestByType(osCompRequests, RequestCnts.Type.COMP);
     }
 
     @Override
     protected Stream<Long> findObjIdsByFilter(FilterDto filter) {
-	if (idsFromViewEnabled) {
-	    Objects.requireNonNull(filter.getIdStrut(),
-		    "When parer.migrate.sacer.os.comp.ids-from-view.enabled is enabled (=true), filter.idstrut is REQUIRED!");
-	    return sacerCompDao.findIdsCompDocOnView(filter);
-	}
-	return sacerCompDao.findIdsCompDoc(filter);
+        if (idsFromViewEnabled) {
+            Objects.requireNonNull(filter.getIdStrut(),
+                    "When parer.migrate.sacer.os.comp.ids-from-view.enabled is enabled (=true), filter.idstrut is REQUIRED!");
+            return sacerCompDao.findIdsCompDocOnView(filter);
+        }
+        return sacerCompDao.findIdsCompDoc(filter);
     }
 
     @Override
     protected IObjectStorageResource executeMigrateViaS3(Long idSacerBackend, Long objId,
-	    Boolean deleteSrc) throws AppMigrateOsS3Exception {
-	return osCompS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
+            Boolean deleteSrc) throws AppMigrateOsS3Exception {
+        return osCompS3Service.doMigrate(idSacerBackend, objId, deleteSrc);
     }
 
     @Override
     protected ObjectType getObjType() {
-	return ObjectStorageCnts.ObjectType.ARO_COMP_DOC;
+        return ObjectStorageCnts.ObjectType.ARO_COMP_DOC;
     }
 
 }
