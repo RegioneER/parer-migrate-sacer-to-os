@@ -53,75 +53,75 @@ public class AroCompDoc implements Serializable {
     private AroCompDoc aroCompDoc;
 
     public AroCompDoc() {
-	// hibernate
+        // hibernate
     }
 
     @Id
     @Column(name = "ID_COMP_DOC")
     public Long getIdCompDoc() {
-	return this.idCompDoc;
+        return this.idCompDoc;
     }
 
     public void setIdCompDoc(Long idCompDoc) {
-	this.idCompDoc = idCompDoc;
+        this.idCompDoc = idCompDoc;
     }
 
     @Column(name = "ID_STRUT")
     public Long getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(Long idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 
     // bi-directional many-to-one association to AroContenutoComp
     @OneToMany(mappedBy = "aroCompDoc")
     public List<AroContenutoComp> getAroContenutoComps() {
-	return this.aroContenutoComps;
+        return this.aroContenutoComps;
     }
 
     public void setAroContenutoComps(List<AroContenutoComp> aroContenutoComps) {
-	this.aroContenutoComps = aroContenutoComps;
+        this.aroContenutoComps = aroContenutoComps;
     }
 
     @Column(name = "TI_SUPPORTO_COMP")
     public String getTiSupportoComp() {
-	return this.tiSupportoComp;
+        return this.tiSupportoComp;
     }
 
     public void setTiSupportoComp(String tiSupportoComp) {
-	this.tiSupportoComp = tiSupportoComp;
+        this.tiSupportoComp = tiSupportoComp;
     }
 
     // bi-directional many-to-one association to AroStrutDoc
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_STRUT_DOC")
     public AroStrutDoc getAroStrutDoc() {
-	return this.aroStrutDoc;
+        return this.aroStrutDoc;
     }
 
     public void setAroStrutDoc(AroStrutDoc aroStrutDoc) {
-	this.aroStrutDoc = aroStrutDoc;
+        this.aroStrutDoc = aroStrutDoc;
     }
 
     @Column(name = "NI_ORD_COMP_DOC")
     public BigDecimal getNiOrdCompDoc() {
-	return this.niOrdCompDoc;
+        return this.niOrdCompDoc;
     }
 
     public void setNiOrdCompDoc(BigDecimal niOrdCompDoc) {
-	this.niOrdCompDoc = niOrdCompDoc;
+        this.niOrdCompDoc = niOrdCompDoc;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_COMP_DOC_PADRE")
     public AroCompDoc getAroCompDoc() {
-	return this.aroCompDoc;
+        return this.aroCompDoc;
     }
 
     public void setAroCompDoc(AroCompDoc aroCompDoc) {
-	this.aroCompDoc = aroCompDoc;
+        this.aroCompDoc = aroCompDoc;
     }
 
 }

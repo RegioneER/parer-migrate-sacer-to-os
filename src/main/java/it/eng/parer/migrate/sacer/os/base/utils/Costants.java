@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.base.utils;
@@ -64,34 +60,34 @@ public class Costants {
 
     public enum TipoSessione {
 
-	VERSAMENTO, AGGIUNGI_DOCUMENTO
+        VERSAMENTO, AGGIUNGI_DOCUMENTO
     }
 
     public enum TiStatoSesioneVers {
-	CHIUSA_OK
+        CHIUSA_OK
     }
 
     public enum ChecksumAlghoritm {
-	MD5("MD5"), SHA256("SHA-256"), CRC32C("CRC32C");
+        MD5("MD5"), SHA256("SHA-256"), CRC32C("CRC32C");
 
-	private String instance;
+        private String instance;
 
-	private ChecksumAlghoritm(String instance) {
-	    this.instance = instance;
-	}
+        private ChecksumAlghoritm(String instance) {
+            this.instance = instance;
+        }
 
-	public String getInstance() {
-	    return instance;
-	}
+        public String getInstance() {
+            return instance;
+        }
 
-	public static ChecksumAlghoritm evalute(String instance) {
-	    for (ChecksumAlghoritm v : values()) {
-		if (v.getInstance().equalsIgnoreCase(instance)) {
-		    return v;
-		}
-	    }
-	    return MD5; // default
-	}
+        public static ChecksumAlghoritm evalute(String instance) {
+            for (ChecksumAlghoritm v : values()) {
+                if (v.getInstance().equalsIgnoreCase(instance)) {
+                    return v;
+                }
+            }
+            return MD5; // default
+        }
     }
 
 }

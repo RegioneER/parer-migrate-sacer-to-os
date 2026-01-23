@@ -49,41 +49,41 @@ public class AroVersIniUnitaDoc implements Serializable {
     @Id
     @Column(name = "ID_VERS_INI_UNITA_DOC")
     public Long getIdVersIniUnitaDoc() {
-	return this.idVersIniUnitaDoc;
+        return this.idVersIniUnitaDoc;
     }
 
     public void setIdVersIniUnitaDoc(Long idVersIniUnitaDoc) {
-	this.idVersIniUnitaDoc = idVersIniUnitaDoc;
+        this.idVersIniUnitaDoc = idVersIniUnitaDoc;
     }
 
     // bi-directional one-to-one association to AroUnitaDoc
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_UNITA_DOC")
     public AroUnitaDoc getAroUnitaDoc() {
-	return this.aroUnitaDoc;
+        return this.aroUnitaDoc;
     }
 
     public void setAroUnitaDoc(AroUnitaDoc aroUnitaDoc) {
-	this.aroUnitaDoc = aroUnitaDoc;
+        this.aroUnitaDoc = aroUnitaDoc;
     }
 
     // bi-directional many-to-one association to AroVersIniDoc
     @OneToMany(mappedBy = "aroVersIniUnitaDoc")
     public List<AroVersIniDatiSpec> getAroVersIniDatiSpecs() {
-	return this.aroVersIniDatiSpecs;
+        return this.aroVersIniDatiSpecs;
     }
 
     public void setAroVersIniDatiSpecs(List<AroVersIniDatiSpec> aroVersIniDatiSpecs) {
-	this.aroVersIniDatiSpecs = aroVersIniDatiSpecs;
+        this.aroVersIniDatiSpecs = aroVersIniDatiSpecs;
     }
 
     // bi-directional many-to-one association to AroVersIniDoc
     @OneToMany(mappedBy = "aroVersIniUnitaDoc")
     public List<AroVersIniDoc> getAroVersIniDocs() {
-	return this.aroVersIniDocs;
+        return this.aroVersIniDocs;
     }
 
     public void setAroVersIniDocs(List<AroVersIniDoc> aroVersIniDocs) {
-	this.aroVersIniDocs = aroVersIniDocs;
+        this.aroVersIniDocs = aroVersIniDocs;
     }
 }

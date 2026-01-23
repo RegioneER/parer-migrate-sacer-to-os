@@ -42,66 +42,66 @@ public class AroVersIniDatiSpecObjectStorage extends AroObjectStorage {
     private BigDecimal idStrut;
 
     public AroVersIniDatiSpecObjectStorage() {
-	// hibernate constructor
+        // hibernate constructor
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_VERS_INI_DATI_SPEC_OBJECT_STORAGE")
     public Long getIdVersIniDatiSpecObjectStorage() {
-	return idVersIniDatiSpecObjectStorage;
+        return idVersIniDatiSpecObjectStorage;
     }
 
     public void setIdVersIniDatiSpecObjectStorage(Long idVersIniDatiSpecObjectStorage) {
-	this.idVersIniDatiSpecObjectStorage = idVersIniDatiSpecObjectStorage;
+        this.idVersIniDatiSpecObjectStorage = idVersIniDatiSpecObjectStorage;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VERS_INI_UNITA_DOC")
     public AroVersIniUnitaDoc getAroVersIniUnitaDoc() {
-	return aroVersIniUnitaDoc;
+        return aroVersIniUnitaDoc;
     }
 
     public void setAroVersIniUnitaDoc(AroVersIniUnitaDoc aroVersIniUnitaDoc) {
-	this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
+        this.aroVersIniUnitaDoc = aroVersIniUnitaDoc;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VERS_INI_DOC")
     public AroVersIniDoc getAroVersIniDoc() {
-	return aroVersIniDoc;
+        return aroVersIniDoc;
     }
 
     public void setAroVersIniDoc(AroVersIniDoc aroVersIniDoc) {
-	this.aroVersIniDoc = aroVersIniDoc;
+        this.aroVersIniDoc = aroVersIniDoc;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_VERS_INI_COMP")
     public AroVersIniComp getAroVersIniComp() {
-	return aroVersIniComp;
+        return aroVersIniComp;
     }
 
     public void setAroVersIniComp(AroVersIniComp aroVersIniComp) {
-	this.aroVersIniComp = aroVersIniComp;
+        this.aroVersIniComp = aroVersIniComp;
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TI_ENTITA_SACER")
     public TiEntitaSacerAroVersIniDatiSpecOs getTiEntitaSacer() {
-	return this.tiEntitaSacer;
+        return this.tiEntitaSacer;
     }
 
     public void setTiEntitaSacer(TiEntitaSacerAroVersIniDatiSpecOs tiEntitaSacer) {
-	this.tiEntitaSacer = tiEntitaSacer;
+        this.tiEntitaSacer = tiEntitaSacer;
     }
 
     @Column(name = "ID_STRUT")
     public BigDecimal getIdStrut() {
-	return this.idStrut;
+        return this.idStrut;
     }
 
     public void setIdStrut(BigDecimal idStrut) {
-	this.idStrut = idStrut;
+        this.idStrut = idStrut;
     }
 }

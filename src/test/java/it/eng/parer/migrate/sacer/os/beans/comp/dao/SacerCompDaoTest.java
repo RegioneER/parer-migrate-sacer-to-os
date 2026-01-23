@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.migrate.sacer.os.beans.comp.dao;
@@ -58,137 +54,137 @@ class SacerCompDaoTest {
     @Test
     @TestTransaction
     void findIdsCompDocByIdStrutTest() {
-	//
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdStrut(8L); // fixed (PARER_TEST)
+        //
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdStrut(8L); // fixed (PARER_TEST)
 
-	assertEquals(1L, dao.findIdsCompDoc(filter).count());
+        assertEquals(1L, dao.findIdsCompDoc(filter).count());
     }
 
     @Test
     @TestTransaction
     void findIdsCompDocByIdDocTest() {
-	//
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdDoc(4896792L);
+        //
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdDoc(4846880L);
 
-	assertEquals(1L, dao.findIdsCompDoc(filter).count());
+        assertEquals(1L, dao.findIdsCompDoc(filter).count());
     }
 
     @Test
     @TestTransaction
     void findIdsCompDocByIdUdTest() {
-	//
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdUnitadoc(3736066L);
+        //
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdUnitadoc(3686154L);
 
-	assertEquals(1L, dao.findIdsCompDoc(filter).count());
+        assertEquals(1L, dao.findIdsCompDoc(filter).count());
     }
 
     @Test
     @TestTransaction
     void findIdsCompDocByIdComDocTest() {
-	//
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdCompDoc(5199798L);
+        //
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdCompDoc(5148056L);
 
-	assertEquals(1L, dao.findIdsCompDoc(filter).count());
+        assertEquals(1L, dao.findIdsCompDoc(filter).count());
     }
 
     @Test
     @TestTransaction
     void saveObjectStorageLinkCompTest() {
-	//
-	assertDoesNotThrow(() -> dao.saveObjectStorageLinkComp(tenant, bucketName,
-		UUID.randomUUID().toString(), 16594053858L, 1L));
+        //
+        assertDoesNotThrow(() -> dao.saveObjectStorageLinkComp(tenant, bucketName,
+                UUID.randomUUID().toString(), 16594053858L, 1L));
     }
 
     @Test
     @TestTransaction
     void findCompDocByIdTestNoException() {
-	//
-	assertDoesNotThrow(() -> dao.findCompDocById(4413L));
+        //
+        assertDoesNotThrow(() -> dao.findCompDocById(4413L));
     }
 
     @Test
     @TestTransaction
     void findCompDocByIdTestWithException() {
-	//
-	assertThrows(AppMigrateOsS3Exception.class, () -> dao.findCompDocById(null));
+        //
+        assertThrows(AppMigrateOsS3Exception.class, () -> dao.findCompDocById(null));
     }
 
     @Test
     @TestTransaction
     void deleteBlContenutoCompTestNoException() {
-	//
-	assertDoesNotThrow(() -> dao.deleteBlContenutoComp(4L));
+        //
+        assertDoesNotThrow(() -> dao.deleteBlContenutoComp(4L));
     }
 
     @Test
     @TestTransaction
     void deleteBlContenutoCompTestWithException() throws AppMigrateOsDeleteSrcException {
-	//
-	assertThrows(AppMigrateOsDeleteSrcException.class,
-		() -> dao.deleteBlContenutoComp(Long.MIN_VALUE));
+        //
+        assertThrows(AppMigrateOsDeleteSrcException.class,
+                () -> dao.deleteBlContenutoComp(Long.MIN_VALUE));
     }
 
     @Test
     @TestTransaction
     void getIdUnitaDocByIdCompDocTestNoException() {
-	assertDoesNotThrow(() -> dao.getIdUnitaDocByIdCompDoc(16594053858L));
+        assertDoesNotThrow(() -> dao.getIdUnitaDocByIdCompDoc(16594053858L));
     }
 
     @Test
     @TestTransaction
     void getIdDocByIdCompDocTestNoException() {
-	assertDoesNotThrow(() -> dao.getIdDocByIdCompDoc(16594053858L));
+        assertDoesNotThrow(() -> dao.getIdDocByIdCompDoc(16594053858L));
     }
 
     @Test
     @TestTransaction
     void getIdUnitaDocByIdCompDocTestWithException() {
-	assertThrows(AppMigrateOsS3Exception.class, () -> dao.getIdUnitaDocByIdCompDoc(null));
+        assertThrows(AppMigrateOsS3Exception.class, () -> dao.getIdUnitaDocByIdCompDoc(null));
     }
 
     @Test
     @TestTransaction
     void getIdDocByIdCompDocTestWithException() {
-	assertThrows(AppMigrateOsS3Exception.class, () -> dao.getIdDocByIdCompDoc(null));
+        assertThrows(AppMigrateOsS3Exception.class, () -> dao.getIdDocByIdCompDoc(null));
     }
 
     @Test
     @TestTransaction
     void findIdsCompDocOnViewAsStreamTest() {
-	//
-	FilterDto filter = new FilterDto();
-	filter.setRowlimit(1L); // fixed
-	filter.setIdStrut(8L); // fixed (PARER_TEST)
+        //
+        FilterDto filter = new FilterDto();
+        filter.setRowlimit(1L); // fixed
+        filter.setIdStrut(8L); // fixed (PARER_TEST)
 
-	assertEquals(1L, dao.findIdsCompDocOnView(filter).count());
-	// assertEquals(8L,
-	// dao.findIdsSessVersUdDocChiusaOkAsStream(filter).findFirst().get().getOrgStrut());
-	// assertEquals(Arrays.asList(8368783475L, 8266783476L),
-	// dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
-	// assertNotEquals(Arrays.asList(9547783583L, 3873783586L),
-	// dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
+        assertEquals(1L, dao.findIdsCompDocOnView(filter).count());
+        // assertEquals(8L,
+        // dao.findIdsSessVersUdDocChiusaOkAsStream(filter).findFirst().get().getOrgStrut());
+        // assertEquals(Arrays.asList(8368783475L, 8266783476L),
+        // dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
+        // assertNotEquals(Arrays.asList(9547783583L, 3873783586L),
+        // dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
     }
 
     @Test
     @TestTransaction
     void findIdsCompDocOnViewAsStreamTestWithNoResult() {
-	//
-	FilterDto filter = new FilterDto();
+        //
+        FilterDto filter = new FilterDto();
 
-	assertEquals(0L, dao.findIdsCompDocOnView(filter).count());
-	// assertEquals(8L,
-	// dao.findIdsSessVersUdDocChiusaOkAsStream(filter).findFirst().get().getOrgStrut());
-	// assertEquals(Arrays.asList(8368783475L, 8266783476L),
-	// dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
-	// assertNotEquals(Arrays.asList(9547783583L, 3873783586L),
-	// dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
+        assertEquals(0L, dao.findIdsCompDocOnView(filter).count());
+        // assertEquals(8L,
+        // dao.findIdsSessVersUdDocChiusaOkAsStream(filter).findFirst().get().getOrgStrut());
+        // assertEquals(Arrays.asList(8368783475L, 8266783476L),
+        // dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
+        // assertNotEquals(Arrays.asList(9547783583L, 3873783586L),
+        // dao.findVrsSessVersUdDocChiusaOkAsStream(filter).map(VrsSessioneVers::getIdSessioneVers).toList());
     }
 }
