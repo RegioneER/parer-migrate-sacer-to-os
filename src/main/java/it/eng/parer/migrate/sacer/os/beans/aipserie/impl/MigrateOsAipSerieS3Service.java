@@ -50,6 +50,8 @@ import it.eng.parer.migrate.sacer.os.jpa.sacer.SerVerSerie;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.constraint.SerFileVerSerieCnts.TiFileVerSerie;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class MigrateOsAipSerieS3Service extends MigrateOsS3Abstract
@@ -67,6 +69,8 @@ public class MigrateOsAipSerieS3Service extends MigrateOsS3Abstract
     IMigrateSacerDao sacerDao;
 
     @Override
+    @Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
+            AppMigrateOsS3Exception.class })
     public IObjectStorageResource doMigrate(Long idSacerBackend, Long idFileVerSerie,
             Boolean delete) throws AppMigrateOsS3Exception {
         // get AroVerIndiceAipUd, AroFileVerIndiceAipUd, VrsSessioneVers
