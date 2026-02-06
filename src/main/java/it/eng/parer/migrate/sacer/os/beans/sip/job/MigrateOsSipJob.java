@@ -60,7 +60,7 @@ public class MigrateOsSipJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    getHostname());
+                    getHostname(), Optional.empty());
 
             // 3. find by filter VrsSessioneVers (as stream)
             osSipService.processMigrationSipFromRequest(osSipRequest.getIdRequest());
@@ -73,7 +73,8 @@ public class MigrateOsSipJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(),
-                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty());
+                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty(),
+                    Optional.empty());
 
             throw e;
         }

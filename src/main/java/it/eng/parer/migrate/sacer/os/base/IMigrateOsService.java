@@ -43,19 +43,21 @@ public interface IMigrateOsService {
     /**
      * Aggiornamento della richiesta
      *
-     * @param idRequest    pk della richiesta
-     * @param state        stato
-     * @param dtStart      data inizio
-     * @param dtLastUpdate data aggiornamento
-     * @param dtFinish     data fine
-     * @param nrFounded    nr. di elementi individuati
-     * @param nrDone       nr. di elementi migrati
-     * @param errorDetail  eventuale errore
+     * @param idRequest      pk della richiesta
+     * @param state          stato
+     * @param dtStart        data inizio
+     * @param dtLastUpdate   data aggiornamento
+     * @param dtFinish       data fine
+     * @param nrFounded      nr. di elementi individuati
+     * @param nrDone         nr. di elementi migrati
+     * @param errorDetail    eventuale errore
+     * @param idRetryRequest pk della richiesta di retry
+     *
      */
     void updateOsRequest(Long idRequest, RequestCnts.State state, Optional<LocalDateTime> dtStart,
             Optional<LocalDateTime> dtLastUpdate, Optional<LocalDateTime> dtFinish,
             Optional<Long> nrFounded, Optional<Long> nrDone, Optional<String> errorDetail,
-            Optional<String> hostname);
+            Optional<String> hostname, Optional<Long> idRetryRequest);
 
     /**
      * Ricerca request prese in carico {@link RequestCnts.State#WAITING}
@@ -111,5 +113,14 @@ public interface IMigrateOsService {
      * @return dto request
      */
     RequestDto getRequestById(final Long idRequest);
+
+    /**
+     * Creazione di una nuova request e filtro come copia di una esistente
+     *
+     * @param idRequest pk della richiesta
+     *
+     * @return pk della nuova request creata
+     */
+    Long createRequestWithFilterAsCopy(Long idRequest);
 
 }

@@ -40,7 +40,7 @@ public class MigrateOsUpdDatiSpecAggMdJob {
     IMigrateOsService osBaseService;
 
     @Inject
-    IMigrateOsUpdDatiSpecAggMdService osService;
+    IMigrateOsUpdDatiSpecAggMdService osUpdDatiSpecAggMdService;
 
     @Scheduled(cron = "{job.upddatispecini.cron}", concurrentExecution = ConcurrentExecution.PROCEED, skipExecutionIf = MigrateOsUpdDatiSpecAggMdRequestPredicate.class)
     void processRegisterReq() {
@@ -58,10 +58,11 @@ public class MigrateOsUpdDatiSpecAggMdJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    getHostname());
+                    getHostname(), Optional.empty());
 
             // 3. find by filter VrsSessioneVers (as stream)
-            osService.processMigrationUpdDatiSpecAggMdFromRequest(osSipRequest.getIdRequest());
+            osUpdDatiSpecAggMdService
+                    .processMigrationUpdDatiSpecAggMdFromRequest(osSipRequest.getIdRequest());
         } catch (Exception e) {
             // update request with local error
             osBaseService.updateOsRequest(osSipRequest.getIdRequest(), RequestCnts.State.ERROR,
@@ -71,7 +72,8 @@ public class MigrateOsUpdDatiSpecAggMdJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(),
-                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty());
+                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty(),
+                    Optional.empty());
 
             throw e;
         }

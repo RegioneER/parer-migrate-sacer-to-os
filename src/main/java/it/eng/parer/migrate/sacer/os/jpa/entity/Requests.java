@@ -54,6 +54,7 @@ public class Requests implements Serializable {
     private String s3Tenant;
     private String s3BanckedName;
     private String hostname;
+    private Long idRetryRequest;
 
     public Requests() {
         // constructor
@@ -208,6 +209,15 @@ public class Requests implements Serializable {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    @Column(name = "ID_RETRY_REQUEST")
+    public Long getIdRetryRequest() {
+        return idRetryRequest;
+    }
+
+    public void setIdRetryRequest(Long idRetryRequest) {
+        this.idRetryRequest = idRetryRequest;
     }
 
 }

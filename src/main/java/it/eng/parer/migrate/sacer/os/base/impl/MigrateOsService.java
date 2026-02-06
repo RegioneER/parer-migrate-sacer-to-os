@@ -39,6 +39,7 @@ import it.eng.parer.migrate.sacer.os.exceptions.AppGenericRuntimeException;
 import it.eng.parer.migrate.sacer.os.exceptions.ErrorCategory;
 import it.eng.parer.migrate.sacer.os.jpa.constraint.ObjectStorageCnts;
 import it.eng.parer.migrate.sacer.os.jpa.constraint.RequestCnts;
+import it.eng.parer.migrate.sacer.os.jpa.entity.Filters;
 import it.eng.parer.migrate.sacer.os.jpa.entity.ObjectStorage;
 import it.eng.parer.migrate.sacer.os.jpa.entity.Requests;
 import it.eng.parer.migrate.sacer.os.runner.util.EndPointCostants.OsRequestOrderByCol;
@@ -68,10 +69,11 @@ public class MigrateOsService implements IMigrateOsService {
     public void updateOsRequest(Long idRequest, RequestCnts.State state,
             Optional<LocalDateTime> dtStart, Optional<LocalDateTime> dtLastUpdate,
             Optional<LocalDateTime> dtFinish, Optional<Long> nrFounded, Optional<Long> nrDone,
-            Optional<String> errorDetail, Optional<String> hostname) {
+            Optional<String> errorDetail, Optional<String> hostname,
+            Optional<Long> idRetryRequest) {
         // call dao
         osBaseDao.updateRequest(idRequest, state, dtStart, dtLastUpdate, dtFinish, nrFounded,
-                nrDone, errorDetail, hostname);
+                nrDone, errorDetail, hostname, idRetryRequest);
     }
 
     @Transactional(value = TxType.REQUIRED, rollbackOn = AppGenericRuntimeException.class)
@@ -107,7 +109,7 @@ public class MigrateOsService implements IMigrateOsService {
             // update state to WAITING
             osBaseDao.updateRequest(request.getIdRequest(), RequestCnts.State.WAITING,
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    Optional.empty(), Optional.empty(), getHostname());
+                    Optional.empty(), Optional.empty(), getHostname(), Optional.empty());
 
             return request;
         }
@@ -196,6 +198,36 @@ public class MigrateOsService implements IMigrateOsService {
         // call dao
         Requests request = osBaseDao.findRequestById(idRequest);
         return new RequestDto(request);
+    }
+
+    @Override
+    @Transactional(value = TxType.REQUIRES_NEW)
+    public Long createRequestWithFilterAsCopy(Long idRequest) {
+        try {
+            // 0. get current request
+            Requests currentRequest = osBaseDao.findRequestById(idRequest);
+            Filters currentFilter = currentRequest.getFilter();
+            // 1. create new migrateRequest with same Filter
+            MigrateRequest retryMigrateRequest = new MigrateRequest(currentFilter.getIdUnitadoc(),
+                    currentFilter.getIdDoc(), currentFilter.getIdSessioneVers(),
+                    currentFilter.getIdCompDoc(), currentFilter.getIdVerIndiceAip(),
+                    currentFilter.getIdVerSerie(), currentFilter.getIdStrut(),
+                    currentFilter.getIdElencoVers(), currentFilter.getDtApertura(),
+                    currentFilter.getDtAperturaYY(), currentFilter.getRowlimit(),
+                    currentRequest.getDeleteSourceObj());
+
+            // 2. create new Request
+            Requests retryRequest = osBaseDao.createRequest(retryMigrateRequest,
+                    currentRequest.getMigrationType(), currentRequest.getS3Tenant(),
+                    currentRequest.getS3BanckedName());
+
+            return retryRequest.getIdRequest();
+        } catch (Exception e) {
+            // silent catch
+            log.atError().log("Errore nella creazione della request di retry per idRequest {}: {}",
+                    idRequest, e.getMessage(), e);
+            return null; // no object
+        }
     }
 
 }

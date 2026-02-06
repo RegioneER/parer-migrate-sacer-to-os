@@ -176,4 +176,31 @@ public class MigrateUtils {
         return localDate.format(DATE_FORMATTER);
     }
 
+    /**
+     * Controlla se l'eccezione o una delle sue cause è dovuta a un errore di tipo "snapshot too
+     * old" in Oracle o altri da aggiungere nel futuro.
+     *
+     * @param e l'eccezione da controllare
+     * @return true se l'eccezione o una delle sue cause è un errore di tipo "snapshot too old",
+     *         false altrimenti
+     */
+    public static boolean handleExceptionForRetry(Throwable e) {
+        final Set<String> retryKeywords = Set.of("ORA-01555", "SNAPSHOT TOO OLD",
+                "ROLLBACK SEGMENT");
+        Throwable cause = e;
+        while (cause != null) {
+            String message = cause.getMessage();
+            if (message != null) {
+                String upperMsg = message.toUpperCase();
+                for (String keyword : retryKeywords) {
+                    if (upperMsg.contains(keyword)) {
+                        return true;
+                    }
+                }
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
 }

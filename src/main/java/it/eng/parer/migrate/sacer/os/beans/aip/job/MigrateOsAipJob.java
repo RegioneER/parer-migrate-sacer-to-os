@@ -57,7 +57,7 @@ public class MigrateOsAipJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    getHostname());
+                    getHostname(), Optional.empty());
 
             // 3. find by filter AroVerIndiceAip (as stream)
             osAipService.processMigrationAipFromRequest(osAipRequest.getIdRequest());
@@ -70,7 +70,8 @@ public class MigrateOsAipJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(),
-                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty());
+                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty(),
+                    Optional.empty());
 
             throw e;
         }

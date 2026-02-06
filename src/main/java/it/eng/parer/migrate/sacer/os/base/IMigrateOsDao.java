@@ -38,7 +38,7 @@ public interface IMigrateOsDao {
     void updateRequest(Long idRequest, RequestCnts.State state, Optional<LocalDateTime> dtStart,
             Optional<LocalDateTime> dtLastUpdate, Optional<LocalDateTime> dtFinish,
             Optional<Long> nrFounded, Optional<Long> nrDone, Optional<String> errorDetail,
-            Optional<String> hostname);
+            Optional<String> hostname, Optional<Long> idRetryRequest);
 
     Requests findRequestByUuid(final String uuid);
 

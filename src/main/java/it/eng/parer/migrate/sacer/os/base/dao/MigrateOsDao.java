@@ -74,7 +74,7 @@ public class MigrateOsDao implements IMigrateOsDao {
     public void updateRequest(Long idRequest, State state, Optional<LocalDateTime> dtStart,
             Optional<LocalDateTime> dtLastUpdate, Optional<LocalDateTime> dtFinish,
             Optional<Long> nrFounded, Optional<Long> nrDone, Optional<String> errorDetail,
-            Optional<String> hostname) {
+            Optional<String> hostname, Optional<Long> idRetryRequest) {
         try {
             Requests request = entityManager.find(Requests.class, idRequest);
             // non null
@@ -106,6 +106,11 @@ public class MigrateOsDao implements IMigrateOsDao {
             // nullable
             if (hostname.isPresent()) {
                 request.setHostname(hostname.get());
+            }
+
+            // nullable
+            if (idRetryRequest.isPresent()) {
+                request.setIdRetryRequest(idRetryRequest.get());
             }
 
             entityManager.persist(request);

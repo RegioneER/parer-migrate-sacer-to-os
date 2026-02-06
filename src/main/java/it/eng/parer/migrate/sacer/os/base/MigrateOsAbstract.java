@@ -16,6 +16,8 @@
  */
 package it.eng.parer.migrate.sacer.os.base;
 
+import static it.eng.parer.migrate.sacer.os.base.utils.MigrateUtils.handleExceptionForRetry;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -99,14 +101,45 @@ public abstract class MigrateOsAbstract {
      * Processa la richiesta di migrazione recuperando su {@link Stream} la lista degli
      * identificativi ed effettua migrazione via S3 per singolo oggetto recuperato dallo stream.
      *
-     * @param idRequest      id request migrazione
-     * @param filterDto      lista ids da migrare
-     * @param deleteSrc      cancellazione del dato se migrazione terminata correttamente
-     * @param idSacerBackend id backend S3
+     * @param idRequest id request migrazione
+     */
+    public void processMigrationRequest(Long idRequest) {
+        try {
+            // call execute migration
+            executeMigrationRequest(idRequest);
+        } catch (Exception ex) {
+            if (handleExceptionForRetry(ex)) {
+                createRetryRequest(idRequest, ex);
+            } else {
+                throw ex; // re-throw exception to Job
+            }
+        }
+    }
+
+    /*
+     * Gestione eccezione con creazione richiesta di retry
+     */
+    private void createRetryRequest(Long idRequest, Exception ex) {
+        // create NEW request+filter as copy of the current
+        Long idRetryRequest = osService.createRequestWithFilterAsCopy(idRequest);
+
+        // update request with local error
+        osService.updateOsRequest(idRequest, RequestCnts.State.ERROR, Optional.empty(),
+                Optional.of(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
+                Optional.of(LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
+                Optional.empty(), Optional.empty(), Optional.of(ExceptionUtils.getStackTrace(ex)),
+                Optional.empty(), Optional.ofNullable(idRetryRequest));
+    }
+
+    /**
+     * Elabora ed esegue la richiesta di migrazione recuperando su {@link Stream} la lista degli
+     * identificativi ed effettua migrazione via S3 per singolo oggetto recuperato dallo stream.
+     *
+     * @param idRequest
      */
     @Transactional(value = TxType.REQUIRED, rollbackOn = {
             AppGenericRuntimeException.class })
-    public void processMigrationRequest(Long idRequest) {
+    protected void executeMigrationRequest(Long idRequest) {
         // check shutdown in progress
         if (shuttingDown) {
             log.atWarn().log(
@@ -177,7 +210,8 @@ public abstract class MigrateOsAbstract {
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
-                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty());
         } finally {
             // close execution
             executor.close();
@@ -275,7 +309,7 @@ public abstract class MigrateOsAbstract {
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.of(Long.valueOf(countNrFound.get())),
                     Optional.of(Long.valueOf(countNrDone.get())), Optional.empty(),
-                    Optional.empty());
+                    Optional.empty(), Optional.empty());
         } finally {
             // decrement running batches
             runningBatches.decrementAndGet();

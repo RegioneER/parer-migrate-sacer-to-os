@@ -93,7 +93,7 @@ class MigrateOsDaoTest {
         assertDoesNotThrow(() -> dao.updateRequest(1L, RequestCnts.State.FINISHED,
                 Optional.of(LocalDateTime.now()), Optional.of(LocalDateTime.now()),
                 Optional.of(LocalDateTime.now()), Optional.of(1L), Optional.of(1L),
-                Optional.empty(), Optional.empty()));
+                Optional.empty(), Optional.empty(), Optional.empty()));
 
     }
 
@@ -105,7 +105,7 @@ class MigrateOsDaoTest {
         assertThrows(AppGenericRuntimeException.class,
                 () -> dao.updateRequest(Long.MIN_VALUE, RequestCnts.State.FINISHED,
                         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                        Optional.empty(), Optional.empty(), Optional.empty()));
+                        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
 
     }
 

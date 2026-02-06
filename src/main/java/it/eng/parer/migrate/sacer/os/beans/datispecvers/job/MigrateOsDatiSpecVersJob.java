@@ -40,38 +40,41 @@ public class MigrateOsDatiSpecVersJob {
     IMigrateOsService osBaseService;
 
     @Inject
-    IMigrateOsDatiSpecVersService osService;
+    IMigrateOsDatiSpecVersService osDatiSpecVersService;
 
     @Scheduled(cron = "{job.datispecvers.cron}", concurrentExecution = ConcurrentExecution.PROCEED, skipExecutionIf = MigrateOsDatiSpecVersRequetPredicate.class)
     void processRegisterReq() {
         // 1. get the request on state WAITING (only ONE)
-        Requests osSipRequest = osBaseService
+        Requests osDatiSpecVersRequest = osBaseService
                 .findAndLockOsRequestBeforeStart(RequestCnts.Type.DATI_SPEC_VERS);
         // 1.1. init MDC
-        MDC.put(MDC_LOG_UUID, osSipRequest.getUuid());
+        MDC.put(MDC_LOG_UUID, osDatiSpecVersRequest.getUuid());
 
         try {
             // 2 update request
-            osBaseService.updateOsRequest(osSipRequest.getIdRequest(), RequestCnts.State.STARTED,
+            osBaseService.updateOsRequest(osDatiSpecVersRequest.getIdRequest(),
+                    RequestCnts.State.STARTED,
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    getHostname());
+                    getHostname(), Optional.empty());
 
             // 3. find by filter VrsSessioneVers (as stream)
-            osService.processMigrationDatiSpecVersFromRequest(osSipRequest.getIdRequest());
+            osDatiSpecVersService
+                    .processMigrationDatiSpecVersFromRequest(osDatiSpecVersRequest.getIdRequest());
         } catch (Exception e) {
             // update request with local error
-            osBaseService.updateOsRequest(osSipRequest.getIdRequest(), RequestCnts.State.ERROR,
-                    Optional.empty(),
+            osBaseService.updateOsRequest(osDatiSpecVersRequest.getIdRequest(),
+                    RequestCnts.State.ERROR, Optional.empty(),
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(),
-                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty());
+                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty(),
+                    Optional.empty());
 
             throw e;
         }

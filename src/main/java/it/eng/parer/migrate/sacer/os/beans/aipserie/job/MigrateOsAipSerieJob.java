@@ -14,6 +14,7 @@
 package it.eng.parer.migrate.sacer.os.beans.aipserie.job;
 
 import static it.eng.parer.migrate.sacer.os.base.utils.MigrateUtils.getHostname;
+import static it.eng.parer.migrate.sacer.os.base.utils.MigrateUtils.handleExceptionForRetry;
 import static it.eng.parer.migrate.sacer.os.runner.util.EndPointCostants.MDC_LOG_UUID;
 
 import java.time.LocalDateTime;
@@ -58,7 +59,7 @@ public class MigrateOsAipSerieJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    getHostname());
+                    getHostname(), Optional.empty());
 
             // 3. find by filter AroVerIndiceAip (as stream)
             osAipService.processMigrationAipSerieFromRequest(osAipRequest.getIdRequest());
@@ -71,7 +72,8 @@ public class MigrateOsAipSerieJob {
                     Optional.of(
                             LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime()),
                     Optional.empty(), Optional.empty(),
-                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty());
+                    Optional.of(ExceptionUtils.getStackTrace(e)), Optional.empty(),
+                    Optional.empty());
 
             throw e;
         }
