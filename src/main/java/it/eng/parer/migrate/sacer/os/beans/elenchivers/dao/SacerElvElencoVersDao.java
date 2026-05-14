@@ -14,7 +14,6 @@
 package it.eng.parer.migrate.sacer.os.beans.elenchivers.dao;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -29,6 +28,7 @@ import it.eng.parer.migrate.sacer.os.exceptions.ErrorCategory;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvElencoVers;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvFileElencoVers;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvFileElencoVersObjectStorage;
+import it.eng.parer.migrate.sacer.os.jpa.sacer.constraint.ElvFileElencoVersCnts.TiFileElencoVers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -43,13 +43,6 @@ public class SacerElvElencoVersDao implements ISacerElencoVersDao {
     EntityManager entityManagerSacer;
 
     private static final String QUERY_AND = " and ";
-    private static final String INDICE = "INDICE";
-    private static final String FIRMA = "FIRMA";
-    private static final String INDICE_FIRMATO = "INDICE_FIRMATO";
-    private static final String MARCA_FIRMA = "MARCA_FIRMA";
-    private static final String MARCA_INDICE = "MARCA_INDICE";
-    private static final List<String> tiFileElencoVersList = Arrays.asList(INDICE, FIRMA,
-            INDICE_FIRMATO, MARCA_FIRMA, MARCA_INDICE);
 
     @Override
     public Stream<Long> findIdsElvElencoVers(FilterDto filter) {
@@ -125,7 +118,8 @@ public class SacerElvElencoVersDao implements ISacerElencoVersDao {
      */
     private void setElvElencoVersQueryParameters(TypedQuery<Long> query, FilterDto filter) {
         // Parametri obbligatori
-        query.setParameter("tiFileElencoVers", tiFileElencoVersList);
+		query.setParameter("tiFileElencoVers", Arrays.asList(TiFileElencoVers.INDICE, TiFileElencoVers.FIRMA,
+				TiFileElencoVers.INDICE_FIRMATO, TiFileElencoVers.MARCA_FIRMA, TiFileElencoVers.MARCA_INDICE));
 
         // Parametri opzionali
         if (Objects.nonNull(filter.getIdUnitadoc())) {

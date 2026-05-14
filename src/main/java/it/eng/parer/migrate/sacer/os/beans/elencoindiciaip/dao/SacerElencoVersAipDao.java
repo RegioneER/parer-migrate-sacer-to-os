@@ -29,6 +29,7 @@ import it.eng.parer.migrate.sacer.os.exceptions.ErrorCategory;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvElencoVers;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvFileElencoVers;
 import it.eng.parer.migrate.sacer.os.jpa.sacer.ElvFileElencoVersObjectStorage;
+import it.eng.parer.migrate.sacer.os.jpa.sacer.constraint.ElvFileElencoVersCnts.TiFileElencoVers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -45,8 +46,6 @@ public class SacerElencoVersAipDao implements ISacerElencoVersAipDao {
     private static final String QUERY_AND = " and ";
     private static final String FIRMA_ELENCO_INDICI_AIP = "FIRMA_ELENCO_INDICI_AIP";
     private static final String MARCA_FIRMA_ELENCO_INDICI_AIP = "MARCA_FIRMA_ELENCO_INDICI_AIP";
-    private static final List<String> tiFileElencoVersList = Arrays.asList(FIRMA_ELENCO_INDICI_AIP,
-            MARCA_FIRMA_ELENCO_INDICI_AIP);
 
     @Override
     public Stream<Long> findIdsElvElencoVers(FilterDto filter) {
@@ -122,8 +121,8 @@ public class SacerElencoVersAipDao implements ISacerElencoVersAipDao {
      */
     private void setElvElencoVersAipQueryParameters(TypedQuery<Long> query, FilterDto filter) {
         // Parametri obbligatori
-        query.setParameter("tiFileElencoVers", tiFileElencoVersList);
-
+        query.setParameter("tiFileElencoVers", Arrays.asList(TiFileElencoVers.FIRMA_ELENCO_INDICI_AIP, TiFileElencoVers.MARCA_FIRMA_ELENCO_INDICI_AIP));
+        
         // Parametri opzionali
         if (Objects.nonNull(filter.getIdUnitadoc())) {
             query.setParameter("idUnitaDoc", filter.getIdUnitadoc());
